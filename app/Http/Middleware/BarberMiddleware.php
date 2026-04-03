@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class AdminMiddleware
+class BarberMiddleware
 {
     /**
      * Handle an incoming request.
@@ -15,9 +15,9 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(!auth()->check() || auth()->user()->role->name !== 'admin')
+        if(!auth()->check() || auth()->user()->role->name !== 'barber')
         {
-            return redirect('/dashboard')->with('error', 'Nemate pristup!');
+            return redirect('/dashboard')->with('erorr', "Nema pristup!");
         }
 
         return $next($request);
