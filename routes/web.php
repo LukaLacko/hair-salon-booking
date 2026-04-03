@@ -3,8 +3,8 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\DashboardController as AdminDashbaordController;
-use App\Http\Controllers\Barber\DashboardController as BarberDashbaordController;
+use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Barber\DashboardController as BarberDashboardController;
 
 
 Route::get('/', function () {
@@ -12,12 +12,13 @@ Route::get('/', function () {
 });
 
 
+
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function(){
-    Route::get('/dashboard', [AdminDashbaordController::class, 'index'])->name('dashbaord');
+    Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 });
 
 Route::middleware(['auth', 'barber'])->prefix('barber')->name('barber.')->group(function(){
-    Route::get('/dashboard', [BarberDashbaordController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [BarberDashboardController::class, 'index'])->name('dashboard');
 });
 
 
