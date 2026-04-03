@@ -22,6 +22,7 @@ class AppointmentSeeder extends Seeder
         $appointment->status = 'Zavšeno';
         $appointment->notes = null;
         $appointment->price = 1000;
+        $appointment->save();
 
         $appointment = new Appointment();
         $appointment->barber_id = 2;
@@ -32,6 +33,7 @@ class AppointmentSeeder extends Seeder
         $appointment->status = 'Zavšeno';
         $appointment->notes = 'Klijent želi da ostane ista dužina kose.';
         $appointment->price = 6000;
+        $appointment->save();
 
         $appointment = new Appointment();
         $appointment->barber_id = 2;
@@ -42,6 +44,7 @@ class AppointmentSeeder extends Seeder
         $appointment->status = 'Na čekanju';
         $appointment->notes = null;
         $appointment->price = 800;
+        $appointment->save();
 
         $appointment = new Appointment();
         $appointment->barber_id = 2;
@@ -52,5 +55,7 @@ class AppointmentSeeder extends Seeder
         $appointment->status = 'Potvrđeno';
         $appointment->notes = null;
         $appointment->price = 4000;
+        $appointment->save();
+
     }
 }

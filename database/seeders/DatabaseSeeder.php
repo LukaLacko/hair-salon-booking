@@ -9,7 +9,6 @@ use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
 
     /**
      * Seed the application's database.
@@ -17,13 +16,16 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // User::factory(10)->create();
-
         $this->call([
-            AppointmentSeeder::class,
+            RoleSeeder::class,
         ]); 
 
         $this->call([
-            BarberSeeder::class,
+            UserSeeder::class,
+        ]); 
+                
+        $this->call([
+            ServiceSeeder::class,
         ]); 
 
         $this->call([
@@ -31,19 +33,16 @@ class DatabaseSeeder extends Seeder
         ]); 
 
         $this->call([
-            RoleSeeder::class,
-        ]); 
-        
-        $this->call([
-            ServiceSeeder::class,
-        ]); 
-
-        $this->call([
-            UserSeeder::class,
+            BarberSeeder::class,
         ]); 
 
         $this->call([
             WorkingHourSeeder::class,
         ]); 
+
+        $this->call([
+            AppointmentSeeder::class,
+        ]); 
+
     }
 }

@@ -19,6 +19,7 @@ class ServiceSeeder extends Seeder
         $service->description = "Profesionalno šišanje prilagođeno željama klijenta.";
         $service->is_active = true;
         $service->duration_minutes = 60;
+        $service->save();
 
         $service = new Service();
         $service->name = "Farbanje";
@@ -26,6 +27,7 @@ class ServiceSeeder extends Seeder
         $service->description = "Bojenje kose kvalitetnim bojama za dugotrajne i sjajne rezultate.";
         $service->is_active = true;
         $service->duration_minutes = 60;
+        $service->save();
 
         $service = new Service();
         $service->name = "Feniranje";
@@ -33,6 +35,7 @@ class ServiceSeeder extends Seeder
         $service->description = "Profesionalno sušenje i oblikovanje kose fenom.";
         $service->is_active = true;
         $service->duration_minutes = 60;
+        $service->save();
 
         $service = new Service();
         $service->name = "Kreatin Tretman";
@@ -40,6 +43,7 @@ class ServiceSeeder extends Seeder
         $service->description = "Dubinski tretman keratinom za zaglađivanje, jačanje i sjaj kose.";
         $service->is_active = true;
         $service->duration_minutes = 60;
+        $service->save();
 
         $service = new Service();
         $service->name = "Mini val";
@@ -47,6 +51,7 @@ class ServiceSeeder extends Seeder
         $service->description = "Trajno kovrčanje kose za prirodan i voluminozan izgled.";
         $service->is_active = true;
         $service->duration_minutes = 60;
+        $service->save();
 
         $service = new Service();
         $service->name = "Pramenovi";
@@ -54,6 +59,7 @@ class ServiceSeeder extends Seeder
         $service->description = "Tehnike bojenja pramenova za prirodan ili dramatičan efekat.";
         $service->is_active = true;
         $service->duration_minutes = 60;
+        $service->save();
 
         $service = new Service();
         $service->name = "Ravnanje kose";
@@ -61,6 +67,7 @@ class ServiceSeeder extends Seeder
         $service->description = "Termičko ravnanje kose peglom za glatki i uredni izgled.";
         $service->is_active = true;
         $service->duration_minutes = 60;
+        $service->save();
 
         $service = new Service();
         $service->name = "Loknanje kose";
@@ -68,6 +75,7 @@ class ServiceSeeder extends Seeder
         $service->description = "Oblikovanje kovrdži i lokni uvijačem za efektan i romantičan stil.";
         $service->is_active = true;
         $service->duration_minutes = 60;
+        $service->save();
 
         $service = new Service();
         $service->name = "Svečana frizura";
@@ -75,6 +83,7 @@ class ServiceSeeder extends Seeder
         $service->description = "Elegantna i kreativna frizura za posebne prilike i događaje.";
         $service->is_active = true;
         $service->duration_minutes = 60;
+        $service->save();
 
         $service = new Service();
         $service->name = "Pranje kose";
@@ -82,6 +91,7 @@ class ServiceSeeder extends Seeder
         $service->description = "Pranje kose profesionalnim šamponima i regeneratorima.";
         $service->is_active = true;
         $service->duration_minutes = 60;
+        $service->save();
 
         $service = new Service();
         $service->name = "Trim brade";
@@ -89,6 +99,7 @@ class ServiceSeeder extends Seeder
         $service->description = "Precizno oblikovanje i uređivanje brade prema željenom stilu.";
         $service->is_active = true;
         $service->duration_minutes = 60;
+        $service->save();
 
         $service = new Service();
         $service->name = "Brijanje brade";
@@ -96,6 +107,7 @@ class ServiceSeeder extends Seeder
         $service->description = "Klasično brijanje toplim peškirom i britvom za savršeno gladak rezultat.";
         $service->is_active = true;
         $service->duration_minutes = 60;
+        $service->save();
 
         $service = new Service();
         $service->name = "Blanš";
@@ -103,6 +115,7 @@ class ServiceSeeder extends Seeder
         $service->description = "Posvetljivanje kose oksidacijskim sredstvima za svjetlije tonove i efekat.";
         $service->is_active = true;
         $service->duration_minutes = 60;
+        $service->save();
 
 
     }

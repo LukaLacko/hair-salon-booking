@@ -19,13 +19,15 @@ class BarberSeeder extends Seeder
         $barber->bio = "Miloš je završio frizersku školu i ima puno iskustva jer celog svog života se bavi ovim poslom.";
         $barber->photo = '';
         $barber->is_available = true;
+        $barber->save();
 
         $barber = new Barber();
-        $barber->user_id = 2;
+        $barber->user_id = 3;
         $barber->name = 'Ana Panković';
         $barber->bio = "Ana je završila frizersku obuku u Londonu i ima puno iskustva jer celog svog života se bavi ovim poslom.";
         $barber->photo = '';
         $barber->is_available = true;
+        $barber->save();
 
     }
 }

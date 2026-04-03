@@ -19,7 +19,7 @@ return new class extends Migration
             $table->dateTime('start_time');
             $table->dateTime('end_time');
             $table->string('status');
-            $table->text('notes');
+            $table->text('notes')->nullable();
             $table->decimal('price', 8, 2);
             $table->timestamps();
         });

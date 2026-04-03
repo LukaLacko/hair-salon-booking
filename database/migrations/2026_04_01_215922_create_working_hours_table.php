@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('barber_id');
             $table->tinyInteger('day_of_the_week');
-            $table->time('start_time');
-            $table->time('end_time');
+            $table->time('start_time')->nullable();
+            $table->time('end_time')->nullable();
             $table->boolean('is_day_off');
             $table->timestamps();
         });
