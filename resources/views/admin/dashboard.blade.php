@@ -53,7 +53,7 @@
                         </svg>
                     </div>
                     <div class="text-2xl font-bold">${{ number_format($monthlyProfit) }}</div>
-                    <p class="text-xs opacity-60">+12.5% od prošlog meseca</p>
+                    <p class="text-xs opacity-60 {{ $profitChange >= 0 ? "text-success font-bold" : "text-error font-bold" }}">{{ $profitChange >= 0 ? '↑ +' : '↓ ' }}{{ number_format($profitChange, 0) }}% od prošlog meseca</p>
                 </div>
             </div>
 
@@ -225,18 +225,18 @@
                         <tbody>
                             @foreach($appointments as $appointment)
                             <tr>
-                                <td class="font-medium">{{ $appointment->client->name }}</td>
-                                <td>{{ $appointment->barber->name }}</td>
-                                <td>{{ $appointment->service->name }}</td>
+                                <td class="font-bold">{{ $appointment->client->name }}</td>
+                                <td class="font-medium">{{ $appointment->barber->name }}</td>
+                                <td> <span class="badge badge-soft badge-neutral font-bold">{{ $appointment->service->name }}</span></td>
                                 <td>{{ \Carbon\Carbon::parse($appointment->end_time)->format('d.m.Y') }}</td>
                                 <td>{{ \Carbon\Carbon::parse($appointment->start_time)->format('H:i') }} - {{ \Carbon\Carbon::parse($appointment->end_time)->format('H:i')}} ({{\Carbon\Carbon::parse($appointment->start_time)->diff(\Carbon\Carbon::parse($appointment->end_time))->forHumans(['short' => true, 'parts' => 2]) }})</td>
                                 <td>
                                     @if($appointment['status'] === 'Završeno')
-                                        <span class="badge badge-success">završeno</span>
+                                        <span class="badge badge-success font-bold">završeno</span>
                                     @elseif($appointment['status'] === 'Potvrđeno')
-                                        <span class="badge badge-warning">potvrđeno</span>
+                                        <span class="badge badge-warning font-bold">potvrđeno</span>
                                     @else
-                                        <span class="badge badge-error">otkazano</span>
+                                        <span class="badge badge-error font-bold">otkazano</span>
                                     @endif
                                 </td>
                                 <td class="text-right font-bold">{{ number_format($appointment->price, '0', ',', '.') }} din</td>

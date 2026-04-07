@@ -31,7 +31,21 @@ class DashboardController extends Controller
             ->orderBy('end_time', 'desc')
             ->first();
 
+        $thisMonthProfit = Appointment::where('status', 'Završeno')
+            ->whereMonth('end_time', now()->month)
+            ->whereYear('end_time', now()->year)
+            ->sum('price');
 
-        return view('admin.dashboard', compact("barbers", "appointments", "totalAppointments", "totalBarbers", "monthlyProfit", "monthlyAppointments", "lastAppointment"));
+        $lastMonthProfit = Appointment::where('status', 'Završeno')
+            ->whereMonth('end_time', now()->subMonth()->month)
+            ->whereYear('end_time', now()->subMonth()->year)
+            ->sum('price');
+
+        $profitChange = 0;
+        if ($lastMonthProfit > 0)
+        {
+            $profitChange = (($thisMonthProfit - $lastMonthProfit) / $lastMonthProfit) * 100;          
+        }
+        return view('admin.dashboard', compact("barbers", "appointments", "totalAppointments", "totalBarbers", "monthlyProfit", "monthlyAppointments", "lastAppointment", 'profitChange'));
     }
 }

@@ -38,7 +38,7 @@ class AppointmentSeeder extends Seeder
         $appointment = new Appointment();
         $appointment->barber_id = 2;
         $appointment->client_id = 3;
-        $appointment->service_id = 1, 2;
+        $appointment->service_id = 1;
         $appointment->start_time = '2026-04-15 09:30:00';
         $appointment->end_time = '2026-04-15 10:30:00';
         $appointment->status = 'Otkazano';
@@ -63,9 +63,20 @@ class AppointmentSeeder extends Seeder
         $appointment->service_id = 1;
         $appointment->start_time = '2026-3-20 11:30:00';
         $appointment->end_time = '2026-03-20 12:00:00';
-        $appointment->status = 'Potvrđeno';
+        $appointment->status = 'Završeno';
         $appointment->notes = null;
         $appointment->price = 500;
+        $appointment->save();
+
+        $appointment = new Appointment();
+        $appointment->barber_id = 3;
+        $appointment->client_id = 3;
+        $appointment->service_id = 7;
+        $appointment->start_time = '2026-3-10 11:30:00';
+        $appointment->end_time = '2026-03-10 12:00:00';
+        $appointment->status = 'Potvrđeno';
+        $appointment->notes = null;
+        $appointment->price = 1200;
         $appointment->save();
 
     }
