@@ -13,13 +13,17 @@
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="redirect('barber.dashboard')" :active="request()->routeIs('barber.dashboard')">
-                        {{ __('barber.dashboard') }}
+                        {{ __('Dashboard') }}
                     </x-nav-link>
-                    <x-nav-link :href="redirect('dashboard')" :active="request()->routeIs('barber.dashboard')">
-                        {{ __('dashboard') }}
+                </div>
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="redirect('barber.dashboard')" :active="request()->routeIs('da.dashboard')">
+                        {{ __('Dashboard') }}
                     </x-nav-link>
-                    <x-nav-link :href="redirect('barber.dashboard')" :active="request()->routeIs('barber.dashboard')">
-                        {{ __('1231.dashboard') }}
+                </div>
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="redirect('barber.dashboard')" :active="request()->routeIs('ad1.dashboard')">
+                        {{ __('Dashboard') }}
                     </x-nav-link>
                 </div>
             </div>
@@ -104,3 +108,4 @@
         </div>
     </div>
 </nav>
+
