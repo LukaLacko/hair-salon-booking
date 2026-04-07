@@ -1,34 +1,4 @@
-
 <x-app-layout>
-    @php
-    // Hardcoded Stats - Change these values
-    $totalBarbers = 8;
-    $totalSessions = 342;
-    $monthlyProfit = 28750;
-    $lastSessionTime = '2:30 PM';
-    
-    
-    // Hardcoded Sessions Data - Change these values
-    $sessions = [
-        ['customerName' => 'Alex Thompson', 'barberName' => 'Marcus Johnson', 'service' => 'Haircut & Beard Trim', 'date' => 'Apr 7, 2026', 'time' => '2:30 PM', 'price' => 45, 'status' => 'completed'],
-        ['customerName' => 'Sarah Mitchell', 'barberName' => 'David Chen', 'service' => 'Premium Haircut', 'date' => 'Apr 7, 2026', 'time' => '2:00 PM', 'price' => 35, 'status' => 'completed'],
-        ['customerName' => 'Kevin Park', 'barberName' => 'Christopher Lee', 'service' => 'Fade & Line Up', 'date' => 'Apr 7, 2026', 'time' => '1:30 PM', 'price' => 40, 'status' => 'completed'],
-        ['customerName' => 'Emily Rodriguez', 'barberName' => 'Robert Taylor', 'service' => 'Kids Haircut', 'date' => 'Apr 7, 2026', 'time' => '3:00 PM', 'price' => 25, 'status' => 'scheduled'],
-        ['customerName' => 'Brian Lee', 'barberName' => 'Daniel Garcia', 'service' => 'Haircut & Shave', 'date' => 'Apr 7, 2026', 'time' => '3:30 PM', 'price' => 50, 'status' => 'scheduled'],
-        ['customerName' => 'Jessica Kim', 'barberName' => 'Marcus Johnson', 'service' => 'Haircut', 'date' => 'Apr 7, 2026', 'time' => '12:00 PM', 'price' => 30, 'status' => 'cancelled'],
-    ];
-    
-    // Hardcoded Last Session Data - Change these values
-    $lastSession = [
-        'customerName' => 'Alex Thompson',
-        'barberName' => 'Marcus Johnson',
-        'service' => 'Haircut & Beard Trim',
-        'date' => 'April 7, 2026',
-        'time' => '2:30 PM',
-        'price' => 45,
-        'duration' => '45 min'
-    ];
-@endphp
 <div class="drawer lg:drawer-open">
     <input id="my-drawer-3" type="checkbox" class="drawer-toggle" />
     <div class="drawer-content flex flex-col">
@@ -68,7 +38,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.879 2.879M12 12L9.121 9.121m0 5.758a3 3 0 10-4.243 4.243 3 3 0 004.243-4.243zm0-5.758a3 3 0 10-4.243-4.243 3 3 0 004.243 4.243z" />
                         </svg>
                     </div>
-                    <div class="text-2xl font-bold">{{ $totalSessions }}</div>
+                    <div class="text-2xl font-bold">{{ $monthlyAppointments }}</div>
                     <p class="text-xs opacity-60">Ovog meseca</p>
                 </div>
             </div>
@@ -96,7 +66,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                     </div>
-                    <div class="text-2xl font-bold">{{ $lastSessionTime }}</div>
+                    <div class="text-2xl font-bold">{{ \Carbon\Carbon::parse($lastAppointment->end_time)->format('H:i')}}</div>
                     <p class="text-xs opacity-60">Poslednji zakazan termin</p>
                 </div>
             </div>
@@ -115,25 +85,33 @@
                                     <tr>
                                         <th>Ime</th>
                                         <th>Status</th>
-                                        <th>Današnjih termina</th>
+                                        <th>Ukupno odradjenih termina</th>
                                         <th class="text-right">Ukupno prihoda</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach($barbers as $barber)
                                     <tr>
-                                        <td class="font-medium">{{ $barber['name'] }}</td>
+                                        <td class="flex font-bold">
+                                            <div class="avatar">
+                                                <div class="mask mask-squircle h-12 w-12">
+                                                  <img
+                                                  src="{{ $barber->photo ? asset('storage/' . $barber->photo) : 'https://ui-avatars.com/api/?name=' . urlencode($barber->name) }}"                                                    alt="Avatar Tailwind CSS Component" />
+                                                </div>
+                                            </div>
+                                            <p class="pl-4">
+                                                {{ $barber['name'] }}
+                                            </p>                                            
+                                        </td>
                                         <td>
-                                            @if($barber['status'] === 'active')
-                                                <span class="badge badge-success">active</span>
-                                            @elseif($barber['status'] === 'on-break')
-                                                <span class="badge badge-warning whitespace-nowrap">on-break</span>
+                                            @if($barber->is_available == true)
+                                                <span class="badge badge-success">aktivan</span>
                                             @else
-                                                <span class="badge badge-ghost">inactive</span>
+                                                <span class="badge badge-ghost">neaktivan</span>
                                             @endif
                                         </td>
-                                        <td class="text-center md:text-left">{{ $barber['sessionsToday'] }}</td>
-                                        <td class="text-right">${{ number_format($barber['totalEarnings']) }}</td>
+                                        <td class="text-center">{{ $barber->appointments_count }}</td>
+                                        <td class="text-right font-bold">${{ number_format($barber->total_profit) }}</td>
                                     </tr>
                                     @endforeach
                                 </tbody>
@@ -157,7 +135,7 @@
                                 </svg>
                                 <div>
                                     <p class="text-sm font-medium">Klijent</p>
-                                    <p class="text-sm opacity-60">{{ $lastSession['customerName'] }}</p>
+                                    <p class="text-sm opacity-60">{{ $lastAppointment->client->name }}</p>
                                 </div>
                             </div>
 
@@ -168,7 +146,7 @@
                                 </svg>
                                 <div>
                                     <p class="text-sm font-medium">Frizer</p>
-                                    <p class="text-sm opacity-60">{{ $lastSession['barberName'] }}</p>
+                                    <p class="text-sm opacity-60">{{ $lastAppointment->barber->name }}</p>
                                 </div>
                             </div>
 
@@ -179,7 +157,7 @@
                                 </svg>
                                 <div>
                                     <p class="text-sm font-medium">Usluga</p>
-                                    <p class="text-sm opacity-60">{{ $lastSession['service'] }}</p>
+                                    <p class="text-sm opacity-60">{{ $lastAppointment->service->name }}</p>
                                 </div>
                             </div>
 
@@ -190,7 +168,7 @@
                                 </svg>
                                 <div>
                                     <p class="text-sm font-medium">Datum</p>
-                                    <p class="text-sm opacity-60">{{ $lastSession['date'] }}</p>
+                                    <p class="text-sm opacity-60">{{ \Carbon\Carbon::parse($lastAppointment->end_time)->format('d.m.Y ') }}</p>
                                 </div>
                             </div>
 
@@ -201,7 +179,12 @@
                                 </svg>
                                 <div>
                                     <p class="text-sm font-medium">Vreme i trajanje</p>
-                                    <p class="text-sm opacity-60">{{ $lastSession['time'] }} ({{ $lastSession['duration'] }})</p>
+                                    <p class="text-sm opacity-60">
+                                        {{ \Carbon\Carbon::parse($lastAppointment->start_time)->format('H:i') }} - 
+                                        {{ \Carbon\Carbon::parse($lastAppointment->end_time)->format('H:i') }} 
+                                        
+                                        ({{ \Carbon\Carbon::parse($lastAppointment->start_time)->diff(\Carbon\Carbon::parse($lastAppointment->end_time))->forHumans(['short' => true, 'parts' => 2]) }})
+                                    </p>
                                 </div>
                             </div>
 
@@ -212,7 +195,7 @@
                                 </svg>
                                 <div>
                                     <p class="text-sm font-medium">Cena</p>
-                                    <p class="text-sm opacity-60">${{ $lastSession['price'] }}</p>
+                                    <p class="text-sm opacity-60">{{ number_format($lastAppointment->price, 0, ',', '.')}} din</p>
                                 </div>
                             </div>
                         </div>
@@ -233,28 +216,30 @@
                                 <th>Klijent</th>
                                 <th>Frizer</th>
                                 <th>Usluga</th>
+                                <th>Datum</th>
                                 <th>Vreme & Trajanje</th>
                                 <th>Status</th>
                                 <th class="text-right">Cena</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($sessions as $session)
+                            @foreach($appointments as $appointment)
                             <tr>
-                                <td class="font-medium">{{ $session['customerName'] }}</td>
-                                <td>{{ $session['barberName'] }}</td>
-                                <td>{{ $session['service'] }}</td>
-                                <td>{{ $session['date'] }} u {{ $session['time'] }}</td>
+                                <td class="font-medium">{{ $appointment->client->name }}</td>
+                                <td>{{ $appointment->barber->name }}</td>
+                                <td>{{ $appointment->service->name }}</td>
+                                <td>{{ \Carbon\Carbon::parse($appointment->end_time)->format('d.m.Y') }}</td>
+                                <td>{{ \Carbon\Carbon::parse($appointment->start_time)->format('H:i') }} - {{ \Carbon\Carbon::parse($appointment->end_time)->format('H:i')}} ({{\Carbon\Carbon::parse($appointment->start_time)->diff(\Carbon\Carbon::parse($appointment->end_time))->forHumans(['short' => true, 'parts' => 2]) }})</td>
                                 <td>
-                                    @if($session['status'] === 'completed')
-                                        <span class="badge badge-primary">completed</span>
-                                    @elseif($session['status'] === 'scheduled')
-                                        <span class="badge badge-secondary">scheduled</span>
+                                    @if($appointment['status'] === 'Završeno')
+                                        <span class="badge badge-success">završeno</span>
+                                    @elseif($appointment['status'] === 'Potvrđeno')
+                                        <span class="badge badge-warning">potvrđeno</span>
                                     @else
-                                        <span class="badge badge-error">cancelled</span>
+                                        <span class="badge badge-error">otkazano</span>
                                     @endif
                                 </td>
-                                <td class="text-right">${{ $session['price'] }}</td>
+                                <td class="text-right font-bold">{{ number_format($appointment->price, '0', ',', '.') }} din</td>
                             </tr>
                             @endforeach
                         </tbody>

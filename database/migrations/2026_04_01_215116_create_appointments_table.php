@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('client_id')->constrained();
             $table->foreignId('service_id')->constrained();
             $table->dateTime('start_time');
-            $table->dateTime('end_time');
+            $table->dateTime('end_time')->nullable();
             $table->string('status');
             $table->text('notes')->nullable();
             $table->decimal('price', 8, 2);

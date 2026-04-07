@@ -19,7 +19,7 @@ class AppointmentSeeder extends Seeder
         $appointment->service_id = 1;
         $appointment->start_time = '2026-04-01 14:00:00';
         $appointment->end_time = '2026-04-01 14:30:00';
-        $appointment->status = 'Zavšeno';
+        $appointment->status = 'Završeno';
         $appointment->notes = null;
         $appointment->price = 1000;
         $appointment->save();
@@ -29,8 +29,8 @@ class AppointmentSeeder extends Seeder
         $appointment->client_id = 2;
         $appointment->service_id = 5;
         $appointment->start_time = '2026-04-02 14:00:00';
-        $appointment->end_time = '2026-04-02 13:30:00';
-        $appointment->status = 'Zavšeno';
+        $appointment->end_time = '2026-04-02 15:30:00';
+        $appointment->status = 'Završeno';
         $appointment->notes = 'Klijent želi da ostane ista dužina kose.';
         $appointment->price = 6000;
         $appointment->save();
@@ -38,10 +38,10 @@ class AppointmentSeeder extends Seeder
         $appointment = new Appointment();
         $appointment->barber_id = 2;
         $appointment->client_id = 3;
-        $appointment->service_id = 1;
+        $appointment->service_id = 1, 2;
         $appointment->start_time = '2026-04-15 09:30:00';
         $appointment->end_time = '2026-04-15 10:30:00';
-        $appointment->status = 'Na čekanju';
+        $appointment->status = 'Otkazano';
         $appointment->notes = null;
         $appointment->price = 800;
         $appointment->save();
@@ -55,6 +55,17 @@ class AppointmentSeeder extends Seeder
         $appointment->status = 'Potvrđeno';
         $appointment->notes = null;
         $appointment->price = 4000;
+        $appointment->save();
+
+        $appointment = new Appointment();
+        $appointment->barber_id = 1;
+        $appointment->client_id = 3;
+        $appointment->service_id = 1;
+        $appointment->start_time = '2026-3-20 11:30:00';
+        $appointment->end_time = '2026-03-20 12:00:00';
+        $appointment->status = 'Potvrđeno';
+        $appointment->notes = null;
+        $appointment->price = 500;
         $appointment->save();
 
     }
