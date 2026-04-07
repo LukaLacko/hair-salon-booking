@@ -12,18 +12,28 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="redirect('barber.dashboard')" :active="request()->routeIs('barber.dashboard')">
+                    <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
                 </div>
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="redirect('barber.dashboard')" :active="request()->routeIs('da.dashboard')">
-                        {{ __('Dashboard') }}
+                    <x-nav-link :href="route('admin.usluge')" :active="request()->routeIs('admin.usluge')">
+                        {{ __('Usluge') }}
                     </x-nav-link>
                 </div>
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="redirect('barber.dashboard')" :active="request()->routeIs('ad1.dashboard')">
-                        {{ __('Dashboard') }}
+                    <x-nav-link :href="route('admin.frizeri')" :active="request()->routeIs('admin.frizeri')">
+                        {{ __('Frizeri') }}
+                    </x-nav-link>
+                </div>
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('admin.termini')" :active="request()->routeIs('admin.termini')">
+                        {{ __('Termini') }}
+                    </x-nav-link>
+                </div>
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('admin.klijenti')" :active="request()->routeIs('admin.klijenti')">
+                        {{ __('Termini') }}
                     </x-nav-link>
                 </div>
             </div>
