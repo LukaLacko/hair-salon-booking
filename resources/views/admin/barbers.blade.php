@@ -140,7 +140,7 @@
                             </svg>
                         </div>
                         <div class="text-2xl font-bold">
-                            {{ number_format(collect($barbers)->map(fn($b) => collect($b['working_hours'])->where('is_day_off', false)->count())->avg(), 1) }}
+                            {{ $avgDaysOff }}
                         </div>
                         <p class="text-xs opacity-60">Dana u nedelji</p>
                     </div>
@@ -181,14 +181,14 @@
                             @foreach($barber['workingHours'] as $hours)
                                 @if(!$hours['is_day_off'])
                                     <div class="badge badge-outline badge-sm">
-                                        {{ substr($hours['day_of_week'], 0, 3) }}
+                                        {{ mb_substr($hours->day_name, 0, 3) }}
                                     </div>
                                 @endif
                             @endforeach
                         </div>
 
                         <div class="card-actions justify-center mt-4 w-full">
-                            <button class="btn btn-info btn-sm flex-1" onclick="openEditModal({{ $barber['id'] }})">
+                            <button class="btn btn-info btn-sm flex-1" onclick='openEditModal({!! json_encode($barber) !!}, {!! json_encode($barber->workingHours) !!})'>
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                 </svg>
@@ -209,275 +209,204 @@
         </div>
     </div>
 
-    {{-- Add/Edit Barber Modal --}}
-    <dialog id="barberModal" class="modal">
-        <div class="modal-box w-11/12 max-w-4xl max-h-[90vh] overflow-y-auto">
-            <h3 class="font-bold text-lg mb-4" id="modalTitle">Dodaj novog Frizera</h3>
-            
-            <form method="dialog">
-                <div class="space-y-4">
-                    {{-- Basic Info Section --}}
-                    <div class="bg-base-200 p-4 rounded-lg space-y-4">
-                        <h4 class="font-semibold text-md">Osnovne Informacije</h4>
-                        
-                        {{-- User ID --}}
-                        <div class="form-control">
-                            <label class="label">
-                                <span class="label-text">User ID</span>
-                            </label>
-                            <input type="number" placeholder="101" class="input input-bordered" id="barberUserId" />
-                        </div>
+{{-- Add/Edit Barber Modal --}}
+<dialog id="barberModal" class="modal">
+    <div class="modal-box w-11/12 max-w-4xl max-h-[90vh] overflow-y-auto">
+        <h3 class="font-bold text-lg mb-4" id="modalTitle">Dodaj novog Frizera</h3>
+        
+        <form id="barberForm" method="POST" action="">
+            @csrf
+            <div id="methodField"></div>
 
-                        {{-- Name --}}
-                        <div class="form-control">
-                            <label class="label">
-                                <span class="label-text">Ime i Prezime</span>
-                            </label>
-                            <input type="text" placeholder="e.g., Marcus Johnson" class="input input-bordered" id="barberName" />
-                        </div>
-
-                        {{-- Bio --}}
-                        <div class="form-control">
-                            <label class="label">
-                                <span class="label-text">Bio</span>
-                            </label>
-                            <textarea class="textarea textarea-bordered h-24" placeholder="Brief description about the barber..." id="barberBio"></textarea>
-                        </div>
-
-                        {{-- Photo URL --}}
-                        <div class="form-control">
-                            <label class="label">
-                                <span class="label-text">Ime Slike</span>
-                            </label>
-                            <input type="text" placeholder="https://example.com/photo.jpg" class="input input-bordered" id="barberPhoto" />
-                            <label class="label">
-                                <span class="label-text-alt">Napišite ime fajla fotografije za profilnu sliku frizera</span>
-                            </label>
-                        </div>
-
-                        {{-- Is Available --}}
-                        <div class="form-control">
-                            <label class="label cursor-pointer justify-start gap-4">
-                                <input type="checkbox" class="toggle toggle-success" id="barberAvailable" checked />
-                                <span class="label-text">Frizer je Aktivan</span>
-                            </label>
-                        </div>
+            <div class="space-y-4">
+                <div class="bg-base-200 p-4 rounded-lg space-y-4">
+                    <h4 class="font-semibold text-md">Osnovne Informacije</h4>
+                    
+                    <div class="form-control">
+                        <label class="label"><span class="label-text">User ID</span></label>
+                        <input type="number" class="input input-bordered" id="barberUserId" name="user_id" required/>
                     </div>
 
-                    {{-- Working Hours Section --}}
-                    <div class="bg-base-200 p-4 rounded-lg space-y-4">
-                        <h4 class="font-semibold text-md">Radni Sati</h4>
-                        
-                        @php
-                            $daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-                        @endphp
+                    <div class="form-control">
+                        <label class="label"><span class="label-text">Ime i Prezime</span></label>
+                        <input type="text" class="input input-bordered" id="barberName" name="name" required/>
+                    </div>
 
-                        @foreach($daysOfWeek as $day)
-                        <div class="border border-base-300 p-3 rounded-lg">
-                            <div class="grid grid-cols-1 md:grid-cols-4 gap-3 items-center">
-                                <div class="font-medium">{{ $day }}</div>
-                                
-                                <div class="form-control">
-                                    <label class="label">
-                                        <span class="label-text text-xs">Početak radnog vremena</span>
-                                    </label>
-                                    <input type="time" class="input input-bordered input-sm" id="start_{{ strtolower($day) }}" />
-                                </div>
+                    <div class="form-control">
+                        <label class="label"><span class="label-text">Bio</span></label>
+                        <textarea class="textarea textarea-bordered h-24" id="barberBio" name="bio"></textarea>
+                    </div>
 
-                                <div class="form-control">
-                                    <label class="label">
-                                        <span class="label-text text-xs">Kraj radnog vremena</span>
-                                    </label>
-                                    <input type="time" class="input input-bordered input-sm" id="end_{{ strtolower($day) }}" />
-                                </div>
+                    <div class="form-control">
+                        <label class="label"><span class="label-text">Ime Slike</span></label>
+                        <input type="text" class="input input-bordered" id="barberPhoto" name="photo"/>
+                    </div>
 
-                                <div class="form-control">
-                                    <label class="label cursor-pointer justify-start gap-2">
-                                        <input type="checkbox" class="checkbox checkbox-sm" id="dayoff_{{ strtolower($day) }}" onchange="toggleDayOff('{{ strtolower($day) }}')" />
-                                        <span class="label-text text-xs">Slobodan dan</span>
-                                    </label>
-                                </div>
+                    <div class="form-control">
+                        <label class="label cursor-pointer justify-start gap-4">
+                            <input type="checkbox" class="toggle toggle-success" id="barberAvailable" name="is_active" value="1" checked/>
+                            <span class="label-text">Frizer je Aktivan</span>
+                        </label>
+                    </div>
+                </div>
+
+                {{-- Radno vreme --}}
+                <div class="bg-base-200 p-4 rounded-lg space-y-4">
+                    <h4 class="font-semibold text-md">Radni Sati</h4>
+                    
+                    @php
+                        $daysOfWeek = [
+                            0 => 'Nedelja',
+                            1 => 'Ponedeljak',
+                            2 => 'Utorak',
+                            3 => 'Sreda',
+                            4 => 'Četvrtak',
+                            5 => 'Petak',
+                            6 => 'Subota'
+                        ];
+                    @endphp
+
+                    @foreach($daysOfWeek as $index => $dayName)
+                    <div class="border border-base-300 p-3 rounded-lg">
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-3 items-center">
+                            <div class="font-medium">{{ $dayName }}</div>
+                            
+                            <div class="form-control">
+                                <label class="label"><span class="label-text text-xs">Početak</span></label>
+                                <input type="time" class="input input-bordered input-sm" 
+                                    name="working_hours[{{ $index }}][start_time]"
+                                    id="start_{{ $index }}"/>
+                            </div>
+
+                            <div class="form-control">
+                                <label class="label"><span class="label-text text-xs">Kraj</span></label>
+                                <input type="time" class="input input-bordered input-sm" 
+                                    name="working_hours[{{ $index }}][end_time]"
+                                    id="end_{{ $index }}"/>
+                            </div>
+
+                            <div class="form-control">
+                                <label class="label cursor-pointer justify-start gap-2">
+                                    <input type="checkbox" class="checkbox checkbox-sm" 
+                                        name="working_hours[{{ $index }}][is_day_off]"
+                                        id="dayoff_{{ $index }}" 
+                                        value="1"
+                                        onchange="toggleDayOff({{ $index }})"/>
+                                    <span class="label-text text-xs">Slobodan dan</span>
+                                </label>
+                                {{-- Skriveno polje da znamo koji je dan --}}
+                                <input type="hidden" name="working_hours[{{ $index }}][day_of_week]" value="{{ $index }}"/>
                             </div>
                         </div>
-                        @endforeach
                     </div>
+                    @endforeach
                 </div>
+            </div>
 
-                <div class="modal-action">
-                    <button type="button" class="btn btn-ghost" onclick="closeBarberModal()">Nazad</button>
-                    <button type="button" class="btn btn-primary" onclick="saveBarber()">Sačuvaj Frizera</button>
-                </div>
+            <div class="modal-action">
+                <button type="button" class="btn btn-ghost" onclick="closeBarberModal()">Nazad</button>
+                <button type="submit" class="btn btn-primary">Sačuvaj Frizera</button>
+            </div>
+        </form>
+    </div>
+</dialog>
+
+{{-- Delete Modal --}}
+<dialog id="deleteModal" class="modal">
+    <div class="modal-box">
+        <h3 class="font-bold text-lg">Potvrdi Brisanje</h3>
+        <p class="py-4">Da li želiš da obrišeš frizera "<span id="deleteBarberName" class="font-semibold"></span>"?</p>
+        <div class="modal-action">
+            <form id="deleteForm" method="POST" action="">
+                @csrf
+                @method('DELETE')
+                <button type="button" class="btn btn-ghost" 
+                    onclick="document.getElementById('deleteModal').close()">Nazad</button>
+                <button type="submit" class="btn btn-error">Obriši</button>
             </form>
         </div>
-        <form method="dialog" class="modal-backdrop">
-            <button>close</button>
-        </form>
-    </dialog>
+    </div>
+</dialog>
 
-    {{-- Delete Confirmation Modal --}}
-    <dialog id="deleteModal" class="modal">
-        <div class="modal-box">
-            <h3 class="font-bold text-lg">Potvrdi Brisanje</h3>
-            <p class="py-4">Da li ste sigurni da želite obrisati ovog Frizera!"<span id="deleteBarberName" class="font-semibold"></span>"? Ovo brisanje se ne može opozvati!</p>
-            <div class="modal-action">
-                <form method="dialog">
-                    <button class="btn btn-ghost">Nazad</button>
-                    <button class="btn btn-error" onclick="confirmDelete()">Obriši</button>
-                </form>
-            </div>
-        </div>
-        <form method="dialog" class="modal-backdrop">
-            <button>nazad</button>
-        </form>
-    </dialog>
-
-    <script>
-        let currentBarberId = null;
-        let deleteBarberId = null;
-
-        // Toggle day off - disable time inputs when day off is checked
-        function toggleDayOff(day) {
-            const dayOffCheckbox = document.getElementById(`dayoff_${day}`);
-            const startTimeInput = document.getElementById(`start_${day}`);
-            const endTimeInput = document.getElementById(`end_${day}`);
-            
-            if (dayOffCheckbox.checked) {
-                startTimeInput.disabled = true;
-                endTimeInput.disabled = true;
-                startTimeInput.value = '';
-                endTimeInput.value = '';
-            } else {
-                startTimeInput.disabled = false;
-                endTimeInput.disabled = false;
-            }
+<script>
+    function toggleDayOff(index) {
+        const dayOff = document.getElementById(`dayoff_${index}`);
+        const start = document.getElementById(`start_${index}`);
+        const end = document.getElementById(`end_${index}`);
+        
+        if (dayOff.checked) {
+            start.disabled = true;
+            end.disabled = true;
+            start.value = '';
+            end.value = '';
+        } else {
+            start.disabled = false;
+            end.disabled = false;
         }
+    }
 
-        // Open Add Modal
-        function openAddModal() {
-            document.getElementById('modalTitle').textContent = 'Add New Barber';
-            document.getElementById('barberUserId').value = '';
-            document.getElementById('barberName').value = '';
-            document.getElementById('barberBio').value = '';
-            document.getElementById('barberPhoto').value = '';
-            document.getElementById('barberAvailable').checked = true;
-            
-            // Reset working hours
-            const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
-            days.forEach(day => {
-                document.getElementById(`start_${day}`).value = '';
-                document.getElementById(`end_${day}`).value = '';
-                document.getElementById(`dayoff_${day}`).checked = false;
-                document.getElementById(`start_${day}`).disabled = false;
-                document.getElementById(`end_${day}`).disabled = false;
-            });
-            
-            currentBarberId = null;
-            document.getElementById('barberModal').showModal();
+    function openAddModal() {
+        const form = document.getElementById('barberForm');
+        form.action = "/admin/frizeri/dodaj";
+        document.getElementById('methodField').innerHTML = '';
+        document.getElementById('modalTitle').textContent = 'Dodaj novog Frizera';
+        
+        // Reset polja
+        document.getElementById('barberUserId').value = '';
+        document.getElementById('barberName').value = '';
+        document.getElementById('barberBio').value = '';
+        document.getElementById('barberPhoto').value = '';
+        document.getElementById('barberAvailable').checked = true;
+        
+        // Reset radnog vremena
+        for(let i = 0; i <= 6; i++) {
+            document.getElementById(`start_${i}`).value = '';
+            document.getElementById(`end_${i}`).value = '';
+            document.getElementById(`dayoff_${i}`).checked = false;
+            document.getElementById(`start_${i}`).disabled = false;
+            document.getElementById(`end_${i}`).disabled = false;
         }
+        
+        document.getElementById('barberModal').showModal();
+    }
 
-        // Open Edit Modal
-        function openEditModal(barberId) {
-            document.getElementById('modalTitle').textContent = 'Edit Barber';
-            
-            // In a real app, you would fetch the barber data by ID
-            // Example data - replace with actual data fetch
-            document.getElementById('barberUserId').value = '101';
-            document.getElementById('barberName').value = 'Marcus Johnson';
-            document.getElementById('barberBio').value = 'Master barber with 10+ years of experience.';
-            document.getElementById('barberPhoto').value = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop';
-            document.getElementById('barberAvailable').checked = true;
-            
-            // Example working hours - replace with actual data fetch
-            const exampleHours = {
-                monday: { start: '09:00', end: '18:00', dayOff: false },
-                tuesday: { start: '09:00', end: '18:00', dayOff: false },
-                wednesday: { start: '09:00', end: '18:00', dayOff: false },
-                thursday: { start: '09:00', end: '18:00', dayOff: false },
-                friday: { start: '09:00', end: '18:00', dayOff: false },
-                saturday: { start: '10:00', end: '16:00', dayOff: false },
-                sunday: { start: '', end: '', dayOff: true }
-            };
-            
-            Object.keys(exampleHours).forEach(day => {
-                document.getElementById(`start_${day}`).value = exampleHours[day].start;
-                document.getElementById(`end_${day}`).value = exampleHours[day].end;
-                document.getElementById(`dayoff_${day}`).checked = exampleHours[day].dayOff;
-                toggleDayOff(day);
-            });
-            
-            currentBarberId = barberId;
-            document.getElementById('barberModal').showModal();
-        }
+    function openEditModal(barber, workingHours) {
+        const form = document.getElementById('barberForm');
+        console.log("Podaci stigli:", barber);
+        console.log("Sati stigli:", workingHours);
+        
+        // Promeni akciju na update rutu
+        form.action = `/admin/frizeri/izmeni/${barber.id}`;
+        document.getElementById('methodField').innerHTML = '<input type="hidden" name="_method" value="PUT">';
+        document.getElementById('modalTitle').textContent = 'Izmeni Frizera';
+        
+        // Popuni polja sa podacima frizera
+        document.getElementById('barberUserId').value = barber.user_id;
+        document.getElementById('barberName').value = barber.name;
+        document.getElementById('barberBio').value = barber.bio || '';
+        document.getElementById('barberPhoto').value = barber.photo || '';
+        document.getElementById('barberAvailable').checked = barber.is_active == 1;
+        
+        // Popuni radno vreme
+        workingHours.forEach(wh => {
+            const i = wh.day_of_the_week;
+            document.getElementById(`start_${i}`).value = wh.start_time || '';
+            document.getElementById(`end_${i}`).value = wh.end_time || '';
+            document.getElementById(`dayoff_${i}`).checked = wh.is_day_off == 1;
+            toggleDayOff(i);
+        });
+        
+        document.getElementById('barberModal').showModal();
+    }
 
-        // Close Barber Modal
-        function closeBarberModal() {
-            document.getElementById('barberModal').close();
-        }
+    function closeBarberModal() {
+        document.getElementById('barberModal').close();
+    }
 
-        // Save Barber
-        function saveBarber() {
-            const userId = document.getElementById('barberUserId').value;
-            const name = document.getElementById('barberName').value;
-            const bio = document.getElementById('barberBio').value;
-            const photo = document.getElementById('barberPhoto').value;
-            const isAvailable = document.getElementById('barberAvailable').checked;
-
-            // Validation
-            if (!userId || !name || !bio || !photo) {
-                alert('Please fill in all required fields');
-                return;
-            }
-
-            // Collect working hours
-            const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
-            const workingHours = days.map(day => ({
-                day_of_week: day.charAt(0).toUpperCase() + day.slice(1),
-                start_time: document.getElementById(`start_${day}`).value,
-                end_time: document.getElementById(`end_${day}`).value,
-                is_day_off: document.getElementById(`dayoff_${day}`).checked
-            }));
-
-            // In a real app, you would submit this data to your Laravel backend
-            console.log('Saving barber:', {
-                id: currentBarberId,
-                user_id: userId,
-                name,
-                bio,
-                photo,
-                is_available: isAvailable,
-                working_hours: workingHours
-            });
-
-            // Show success message
-            alert(currentBarberId ? 'Barber updated successfully!' : 'Barber added successfully!');
-            
-            // Close modal
-            closeBarberModal();
-            
-            // In a real app, you would reload the page or update the cards
-            // location.reload();
-        }
-
-        // Open Delete Modal
-        function openDeleteModal(barberId, barberName) {
-            deleteBarberId = barberId;
-            document.getElementById('deleteBarberName').textContent = barberName;
-            document.getElementById('deleteModal').showModal();
-        }
-
-        // Confirm Delete
-        function confirmDelete() {
-            // In a real app, you would send a delete request to your Laravel backend
-            console.log('Deleting barber:', deleteBarberId);
-            
-            // Show success message
-            alert('Barber deleted successfully!');
-            
-            // Close modal
-            document.getElementById('deleteModal').close();
-            
-            // In a real app, you would reload the page or update the cards
-            // location.reload();
-        }
-    </script>
+    function openDeleteModal(barberId, barberName) {
+        document.getElementById('deleteBarberName').textContent = barberName;
+        document.getElementById('deleteForm').action = `/admin/frizeri/obrisi/${barberId}`;
+        document.getElementById('deleteModal').showModal();
+    }
+</script>
 </x-app-layout>
