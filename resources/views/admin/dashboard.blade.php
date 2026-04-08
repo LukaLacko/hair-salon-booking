@@ -66,7 +66,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                     </div>
-                    <div class="text-2xl font-bold">{{ \Carbon\Carbon::parse($lastAppointment->end_time)->format('H:i')}}</div>
+                    <div class="text-2xl font-bold">{{ \Carbon\Carbon::parse($lastAppointment->end_time)->format('H:i')}} PM</div>
                     <p class="text-xs opacity-60">Poslednji zakazan termin</p>
                 </div>
             </div>

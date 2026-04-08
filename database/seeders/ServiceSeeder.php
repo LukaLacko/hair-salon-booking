@@ -26,7 +26,7 @@ class ServiceSeeder extends Seeder
         $service->price = 1000;
         $service->description = "Bojenje kose kvalitetnim bojama za dugotrajne i sjajne rezultate.";
         $service->is_active = true;
-        $service->duration_minutes = 60;
+        $service->duration_minutes = 30;
         $service->save();
 
         $service = new Service();
@@ -34,7 +34,7 @@ class ServiceSeeder extends Seeder
         $service->price = 800;
         $service->description = "Profesionalno sušenje i oblikovanje kose fenom.";
         $service->is_active = true;
-        $service->duration_minutes = 60;
+        $service->duration_minutes = 10;
         $service->save();
 
         $service = new Service();
@@ -58,7 +58,7 @@ class ServiceSeeder extends Seeder
         $service->price = 4000;
         $service->description = "Tehnike bojenja pramenova za prirodan ili dramatičan efekat.";
         $service->is_active = true;
-        $service->duration_minutes = 60;
+        $service->duration_minutes = 40;
         $service->save();
 
         $service = new Service();
@@ -66,7 +66,7 @@ class ServiceSeeder extends Seeder
         $service->price = 700;
         $service->description = "Termičko ravnanje kose peglom za glatki i uredni izgled.";
         $service->is_active = true;
-        $service->duration_minutes = 60;
+        $service->duration_minutes = 20;
         $service->save();
 
         $service = new Service();
@@ -82,7 +82,7 @@ class ServiceSeeder extends Seeder
         $service->price = 2500;
         $service->description = "Elegantna i kreativna frizura za posebne prilike i događaje.";
         $service->is_active = true;
-        $service->duration_minutes = 60;
+        $service->duration_minutes = 40;
         $service->save();
 
         $service = new Service();
@@ -90,7 +90,7 @@ class ServiceSeeder extends Seeder
         $service->price = 500;
         $service->description = "Pranje kose profesionalnim šamponima i regeneratorima.";
         $service->is_active = true;
-        $service->duration_minutes = 60;
+        $service->duration_minutes = 20;
         $service->save();
 
         $service = new Service();
@@ -98,15 +98,15 @@ class ServiceSeeder extends Seeder
         $service->price = 400;
         $service->description = "Precizno oblikovanje i uređivanje brade prema željenom stilu.";
         $service->is_active = true;
-        $service->duration_minutes = 60;
+        $service->duration_minutes = 10;
         $service->save();
 
         $service = new Service();
         $service->name = "Brijanje brade";
         $service->price = 500;
         $service->description = "Klasično brijanje toplim peškirom i britvom za savršeno gladak rezultat.";
-        $service->is_active = true;
-        $service->duration_minutes = 60;
+        $service->is_active = false;
+        $service->duration_minutes = 20;
         $service->save();
 
         $service = new Service();

@@ -20,7 +20,13 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function(){
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+    // SERVICES
+    Route::post('/usluge/dodaj', [AdminServiceController::class, 'store'])->name('dodaj');
     Route::get('/usluge', [AdminServiceController::class, 'index'])->name('usluge');
+    Route::put('/usluge/izmeni/{id}', [AdminServiceController::class, 'update'])->name('izmeni');
+    Route::delete('/usluge/obrisi/{id}', [AdminServiceController::class, 'destroy'])->name('obrisi');
+
+
     Route::get('/frizeri', [AdminBarberController::class, 'index'])->name('frizeri');
     Route::get('/termini', [AdminAppointmentController::class, 'index'])->name('termini');
     Route::get('/klijenti', [AdminClientController::class, 'index'])->name('klijenti');
