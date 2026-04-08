@@ -45,5 +45,27 @@ class WorkingHourSeeder extends Seeder
             ]);
         }
 
+        foreach($days as $day)
+        {
+            WorkingHour::create([
+                'barber_id' => 3,
+                'day_of_the_week' => $day['day'],
+                'start_time' => $day['start'],
+                'end_time' => $day['end'],
+                'is_day_off' => $day['off']
+            ]);
+        }
+
+        foreach($days as $day)
+        {
+            WorkingHour::create([
+                'barber_id' => 4,
+                'day_of_the_week' => $day['day'],
+                'start_time' => $day['start'],
+                'end_time' => $day['end'],
+                'is_day_off' => $day['off']
+            ]);
+        }
+
     }
 }

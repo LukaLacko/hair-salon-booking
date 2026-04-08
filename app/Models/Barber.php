@@ -10,4 +10,9 @@ class Barber extends Model
     {
         return $this->hasMany(Appointment::class);
     }
+
+    public function workingHours()
+    {
+        return $this->hasMany(WorkingHour::class);
+    }
 }

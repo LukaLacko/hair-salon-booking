@@ -6,5 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class WorkingHour extends Model
 {
-    //
+    public function barber()
+    {
+        return $this->belongsTo(Barber::class); 
+    }
+
 }
