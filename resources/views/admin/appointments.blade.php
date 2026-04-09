@@ -1,3 +1,36 @@
+@if(session('success'))
+<div id="success-alert" class="alert alert-success shadow-lg mb-4">
+    <span>{{ session('success') }}</span>
+</div>
+@endif
+
+@if(session('error'))
+<div id="error-alert" class="alert alert-error shadow-lg mb-4">
+    <span>{{ session('error') }}</span>
+</div>
+@endif
+
+<script>
+    setTimeout(function() {
+        const successAlert = document.getElementById('success-alert');
+        if (successAlert) {
+            successAlert.style.transition = 'opacity 1s';
+            successAlert.style.opacity = '0';
+            setTimeout(() => {
+                successAlert.style.display = 'none';
+            }, 1000);
+        }
+
+        const errorAlert = document.getElementById('error-alert');
+        if (errorAlert) {
+            errorAlert.style.transition = 'opacity 1s';
+            errorAlert.style.opacity = '0';
+            setTimeout(() => {
+                errorAlert.style.display = 'none';
+            }, 1000);
+        }
+    }, 3000);
+</script>
 <x-app-layout>
     {{-- Main Content --}}
     <div class="min-h-screen bg-base-200 p-6">
@@ -230,7 +263,7 @@
                                                     Izmeni
                                                 </a></li>
                                                 @if($appointment['status'] === 'Na čekanju')
-                                                <li><a onclick="confirmAppointment({{ $appointment['id'] }})">
+                                                <li><a href="{{ route('admin.potvrdi', $appointment->id) }}">
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                                     </svg>

@@ -83,4 +83,13 @@ class AppointmentController extends Controller
 
         return redirect()->back()->with('success', 'Uspešno zakazan novi termin!');
     }
+
+    public function confirm($id)
+    {
+        $appointment = Appointment::findOrFail($id);
+        $appointment->status = 'Potvrđeno';
+        $appointment->save();
+
+        return redirect()->back()->with('success', 'Uspešno potvrđen termin!');
+    }
 }
