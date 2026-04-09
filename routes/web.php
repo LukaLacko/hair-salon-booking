@@ -36,6 +36,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/termini', [AdminAppointmentController::class, 'index'])->name('termini');
     Route::post('/termini/dodaj', [AdminAppointmentController::class, 'store'])->name('dodaj');
     Route::get('/termini/potvrdi/{id}', [AdminAppointmentController::class, 'confirm'])->name('potvrdi');
+    Route::get('/termini/završi/{id}', [AdminAppointmentController::class, 'completed'])->name('završi');
 
 
     Route::get('/klijenti', [AdminClientController::class, 'index'])->name('klijenti');
