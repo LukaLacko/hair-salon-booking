@@ -1,32 +1,4 @@
 <x-app-layout>
-    @php
-        // Hardcoded Data - Change these values
-        
-
-        // Available clients
-        $clients = [
-            ['id' => 1, 'name' => 'Alex Thompson'],
-            ['id' => 2, 'name' => 'Sarah Mitchell'],
-            ['id' => 3, 'name' => 'Kevin Park'],
-            ['id' => 4, 'name' => 'Emily Rodriguez'],
-            ['id' => 5, 'name' => 'Brian Lee'],
-            ['id' => 6, 'name' => 'Jessica Kim'],
-            ['id' => 7, 'name' => 'Michael Brown'],
-            ['id' => 8, 'name' => 'Lisa Anderson'],
-        ];
-        
-        // Available services
-        $services = [
-            ['id' => 1, 'name' => 'Classic Haircut', 'price' => 30],
-            ['id' => 2, 'name' => 'Premium Haircut', 'price' => 45],
-            ['id' => 3, 'name' => 'Beard Trim', 'price' => 20],
-            ['id' => 4, 'name' => 'Haircut & Beard Combo', 'price' => 45],
-            ['id' => 5, 'name' => 'Hot Towel Shave', 'price' => 35],
-        ];
-        
-        // Appointments
-
-    @endphp
     {{-- Main Content --}}
     <div class="min-h-screen bg-base-200 p-6">
         <div class="mx-auto max-w-7xl space-y-6">
@@ -106,62 +78,65 @@
             <div class="card bg-base-100 shadow-xl">
                 <div class="card-body">
                     <div class="flex flex-wrap gap-4">
-                        <form action="{{ route('admin.termini') }}" method="GET" class="flex">
+                        <form action="{{ route('admin.termini') }}" method="GET">
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                                <div class="form-control">
+                                    <label class="label">
+                                        <span class="label-text">Pretraga po datumu</span>
+                                    </label>
+                                    <input type="date" 
+                                        name="date" 
+                                        class="input input-bordered focus:input-primary" 
+                                        value="{{ $date }}" 
+                                        onchange="this.form.submit()"/>
+    
+                                </div>
+                            
+                                <div class="form-control">
+                                    <label class="label">
+                                        <span class="label-text">Pretraga po frizeru</span>
+                                    </label>
+                                    <select name="barber_id" onchange="this.form.submit()" class="select select-bordered">
+                                        <option value="" {{ $barberId == '' ? 'selected' : '' }}>Svi Frizeri</option>
+                                        @foreach($barbers as $barber)
+                                        <option value="{{ $barber->id }}" {{ $barberId == $barber->id ? 'selected' : '' }}>{{ $barber->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+    
+    
+                                <div class="form-control">
+                                    <label class="label">
+                                        <span class="label-text">Pretraga po statusu</span>
+                                    </label>
+                                    <select name="status" onchange="this.form.submit()" class="select select-bordered">
+                                        <option value="" {{ $statusName == '' ? 'selected' : '' }}>Svi Statusi</option>
+                                        <option value="Na čekanju" {{ $statusName == 'Na čekanju' ? 'selected' : ''}}>Na Čekanju</option>
+                                        <option value="Potvrđeno" {{ $statusName == 'Potvrđeno' ? 'selected' : ''}}>Potvrđeno</option>
+                                        <option value="Završeno" {{ $statusName == 'Završeno' ? 'selected' : ''}}>Završeno</option>
+                                        <option value="Otkazano" {{ $statusName == 'Otkazano' ? 'selected' : ''}}>Otkazano</option>
+                                    </select>
+                                </div>
+                        </form>
+    
                             <div class="form-control">
                                 <label class="label">
-                                    <span class="label-text">Pretraga po datumu</span>
+                                    <span class="label-text">&nbsp;</span>
                                 </label>
-                                <input type="date" 
-                                    name="date" 
-                                    class="input input-bordered focus:input-primary" 
-                                    value="{{ $date }}" 
-                                    onchange="this.form.submit()"/>
-
+                                <button class="">
+    
+                                    @if($date || $barberId || $statusName)
+                                    <a href="{{ route('admin.termini') }}" class="btn btn-ghost join-item border-base-300">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                        </svg>
+                                        Prikaži sve
+                                    </a>
+                                    @endif
+                                </button>
                             </div>
-                        
-                            <div class="form-control pl-4">
-                                <label class="label">
-                                    <span class="label-text">Pretraga po frizeru</span>
-                                </label>
-                                <select name="barber_id" onchange="this.form.submit()" class="select select-bordered">
-                                    <option value="" {{ $barberId == '' ? 'selected' : '' }}>Svi Frizeri</option>
-                                    @foreach($barbers as $barber)
-                                    <option value="{{ $barber->id }}" {{ $barberId == $barber->id ? 'selected' : '' }}>{{ $barber->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-
-                            <div class="form-control pl-4">
-                                <label class="label">
-                                    <span class="label-text">Pretraga po statusu</span>
-                                </label>
-                                <select name="status" onchange="this.form.submit()" class="select select-bordered">
-                                    <option value="" {{ $statusName == '' ? 'selected' : '' }}>Svi Statusi</option>
-                                    <option value="Na čekanju" {{ $statusName == 'Na čekanju' ? 'selected' : ''}}>Na Čekanju</option>
-                                    <option value="Potvrđeno" {{ $statusName == 'Potvrđeno' ? 'selected' : ''}}>Potvrđeno</option>
-                                    <option value="Završeno" {{ $statusName == 'Završeno' ? 'selected' : ''}}>Završeno</option>
-                                    <option value="Otkazano" {{ $statusName == 'Otkazano' ? 'selected' : ''}}>Otkazano</option>
-                                </select>
-                            </div>
-                        </form>
-
-                        <div class="form-control">
-                            <label class="label">
-                                <span class="label-text">&nbsp;</span>
-                            </label>
-                            <button class="">
-
-                                @if($date || $barberId || $statusName)
-                                <a href="{{ route('admin.termini') }}" class="btn btn-ghost join-item border-base-300">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                                    </svg>
-                                    Prikaži sve
-                                </a>
-                                @endif
-                            </button>
                         </div>
+                            
                     </div>
                 </div>
             </div>
@@ -190,13 +165,15 @@
                                 <tr>
                                     <td>
                                         <div class="font-medium">{{ $appointment->start_time->format('M d, Y') }}</div>
-                                        <div class="text-sm opacity-60">{{ $appointment->start_time->format('h:i A') }} - {{ $appointment->start_time->format('h:i A') }}</div>
+                                        <div class="text-sm opacity-60">{{ $appointment->start_time->format('h:i A') }} - {{ $appointment->end_time?->format('h:i A') ?? 'N/A'}}</div>
                                     </td>
                                     <td>
                                         <div class="flex items-center gap-3">
                                             <div class="avatar placeholder">
-                                                <div class="bg-neutral text-neutral-content rounded-full w-8">
-                                                    <span class="text-xs">{{ substr($appointment->client->name, 0, 2) }}</span>
+                                                <div class="bg-neutral text-neutral-content rounded-full w-8 h-8 flex items-center justify-center">
+                                                    <span class="text-xs font-semibold uppercase leading-none">
+                                                        {{ substr($appointment->client->name, 0, 2) }}
+                                                    </span>
                                                 </div>
                                             </div>
                                             <div>
@@ -207,7 +184,7 @@
                                     <td>{{ $appointment->barber->name }}</td>
                                     <td>{{ $appointment->service->name}}</td>
                                     <td>{{ $appointment->duration }}</td>
-                                    <td>{{ $appointment->price }} din</td>
+                                    <td>{{ number_format($appointment->price, 0, ',', '.') }} din</td>
                                     <td>
                                         @if($appointment->status === 'Potvrđeno')
                                             <span class="badge badge-success gap-2">
@@ -239,40 +216,40 @@
                                                 </svg>
                                             </label>
                                             <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-                                                <li><a onclick="viewAppointment({{ $appointment['id'] }})">
+                                                <li><a onclick='viewAppointment(@json($appointment->load(["client", "barber", "service"])))'>
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                                     </svg>
-                                                    View Details
+                                                    Pogledaj detalje
                                                 </a></li>
                                                 <li><a onclick="openEditModal({{ $appointment['id'] }})">
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                                     </svg>
-                                                    Edit
+                                                    Izmeni
                                                 </a></li>
-                                                @if($appointment['status'] === 'pending')
+                                                @if($appointment['status'] === 'Na čekanju')
                                                 <li><a onclick="confirmAppointment({{ $appointment['id'] }})">
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                                     </svg>
-                                                    Confirm
+                                                    Potvrdi
                                                 </a></li>
                                                 @endif
-                                                @if($appointment['status'] === 'confirmed')
+                                                @if($appointment['status'] === 'Potvrđeno')
                                                 <li><a onclick="completeAppointment({{ $appointment['id'] }})">
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                                     </svg>
-                                                    Mark Complete
+                                                    Označi završeno
                                                 </a></li>
                                                 @endif
-                                                <li><a onclick="openDeleteModal({{ $appointment['id'] }}, '{{ $appointment['client_name'] }}')">
+                                                <li><a onclick="openDeleteModal({{ $appointment->id }}, '{{ $appointment->client->name }}')">
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                                     </svg>
-                                                    Cancel
+                                                    Obriši
                                                 </a></li>
                                             </ul>
                                         </div>
@@ -293,7 +270,8 @@
         <div class="modal-box w-11/12 max-w-3xl">
             <h3 class="font-bold text-lg mb-4" id="modalTitle">Zakaži novi termin</h3>
             
-            <form method="dialog">
+            <form id="appointmentForm" method="POST">
+                @csrf
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     
                     {{-- Client Selection --}}
@@ -301,10 +279,10 @@
                         <label class="label">
                             <span class="label-text">Klijent *</span>
                         </label>
-                        <select class="select select-bordered" id="appointmentClient">
+                        <select class="select select-bordered" id="appointmentClient" name="client_id">
                             <option disabled selected>Izaberi klijenta</option>
                             @foreach($clients as $client)
-                            <option value="{{ $client['id'] }}">{{ $client['name'] }}</option>
+                            <option value="{{ $client->id }}">{{ $client->name }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -314,10 +292,10 @@
                         <label class="label">
                             <span class="label-text">Frizer *</span>
                         </label>
-                        <select class="select select-bordered" id="appointmentBarber">
+                        <select class="select select-bordered" id="appointmentBarber" name="barber_id">
                             <option disabled selected>Select a barber</option>
                             @foreach($barbers as $barber)
-                            <option value="{{ $barber['id'] }}">{{ $barber['name'] }}</option>
+                            <option value="{{ $barber->id }}">{{ $barber->name}}</option>
                             @endforeach
                         </select>
                     </div>
@@ -327,11 +305,11 @@
                         <label class="label">
                             <span class="label-text">Service *</span>
                         </label>
-                        <select class="select select-bordered" id="appointmentService" onchange="updatePrice()">
+                        <select class="select select-bordered" id="appointmentService" onchange="updatePrice()" name="service_id">
                             <option disabled selected>Select a service</option>
                             @foreach($services as $service)
-                            <option value="{{ $service['id'] }}" data-price="{{ $service['price'] }}">
-                                {{ $service['name'] }} - ${{ $service['price'] }}
+                            <option value="{{ $service->id }}" data-price="{{ number_format($service->price, 0, ',', '.') }}">
+                                {{ $service->name }} - ${{ number_format($service->price, 0, ',', '.')}}
                             </option>
                             @endforeach
                         </select>
@@ -340,39 +318,39 @@
                     {{-- Start Date & Time --}}
                     <div class="form-control">
                         <label class="label">
-                            <span class="label-text">Start Date *</span>
+                            <span class="label-text">Datum početka *</span>
                         </label>
-                        <input type="date" class="input input-bordered" id="appointmentStartDate" />
+                        <input type="date" class="input input-bordered" id="appointmentStartDate" name="start_date"/>
                     </div>
 
                     <div class="form-control">
                         <label class="label">
-                            <span class="label-text">Start Time *</span>
+                            <span class="label-text">Vreme početka *</span>
                         </label>
-                        <input type="time" class="input input-bordered" id="appointmentStartTime" />
+                        <input type="time" class="input input-bordered" id="appointmentStartTime" name="start_time"/>
                     </div>
 
                     {{-- End Date & Time --}}
                     <div class="form-control">
                         <label class="label">
-                            <span class="label-text">End Date *</span>
+                            <span class="label-text">Datum završetka *</span>
                         </label>
-                        <input type="date" class="input input-bordered" id="appointmentEndDate" />
+                        <input type="date" class="input input-bordered" id="appointmentEndDate" name="end_date" />
                     </div>
 
                     <div class="form-control">
                         <label class="label">
-                            <span class="label-text">End Time *</span>
+                            <span class="label-text">Vreme završetka *</span>
                         </label>
-                        <input type="time" class="input input-bordered" id="appointmentEndTime" />
+                        <input type="time" class="input input-bordered" id="appointmentEndTime" name="end_time" />
                     </div>
 
                     {{-- Price --}}
                     <div class="form-control">
                         <label class="label">
-                            <span class="label-text">Price ($) *</span>
+                            <span class="label-text">Cena (din) *</span>
                         </label>
-                        <input type="number" step="0.01" placeholder="0.00" class="input input-bordered" id="appointmentPrice" />
+                        <input type="number" step="0.01" placeholder="0.00" class="input input-bordered" id="appointmentPrice" name="price" />
                     </div>
 
                     {{-- Status --}}
@@ -380,11 +358,11 @@
                         <label class="label">
                             <span class="label-text">Status *</span>
                         </label>
-                        <select class="select select-bordered" id="appointmentStatus">
-                            <option value="pending">Pending</option>
-                            <option value="confirmed" selected>Confirmed</option>
-                            <option value="completed">Completed</option>
-                            <option value="cancelled">Cancelled</option>
+                        <select class="select select-bordered" id="appointmentStatus" name="status">
+                            <option value="Na čekanju">Na čekanju</option>
+                            <option value="Potvrđeno" selected>Potvrđeno</option>
+                            <option value="Završeno">Završeno</option>
+                            <option value="Otkazano">Otkazano</option>
                         </select>
                     </div>
 
@@ -393,50 +371,50 @@
                         <label class="label">
                             <span class="label-text">Notes</span>
                         </label>
-                        <textarea class="textarea textarea-bordered h-24" placeholder="Any special requests or notes..." id="appointmentNotes"></textarea>
+                        <textarea class="textarea textarea-bordered h-24" placeholder="Any special requests or notes..." id="appointmentNotes" name="notes"></textarea>
                     </div>
                 </div>
 
                 <div class="modal-action">
-                    <button type="button" class="btn btn-ghost" onclick="closeAppointmentModal()">Cancel</button>
-                    <button type="button" class="btn btn-primary" onclick="saveAppointment()">Save Appointment</button>
+                    <button type="button" class="btn btn-ghost" onclick="closeAppointmentModal()">Nazad</button>
+                    <button type="submit" class="btn btn-primary" onclick="saveAppointment()">Sačuvaj Termin</button>
                 </div>
             </form>
         </div>
         <form method="dialog" class="modal-backdrop">
-            <button>close</button>
+            <button>nazad</button>
         </form>
     </dialog>
 
     {{-- View Appointment Modal --}}
     <dialog id="viewModal" class="modal">
         <div class="modal-box w-11/12 max-w-2xl">
-            <h3 class="font-bold text-lg mb-4">Appointment Details</h3>
+            <h3 class="font-bold text-lg mb-4">Detalji Termina</h3>
             
             <div class="space-y-4">
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <p class="text-sm opacity-60">Client</p>
+                        <p class="text-sm opacity-60">Klijent</p>
                         <p class="font-medium" id="viewClient">-</p>
                     </div>
                     <div>
-                        <p class="text-sm opacity-60">Barber</p>
+                        <p class="text-sm opacity-60">Frizer</p>
                         <p class="font-medium" id="viewBarber">-</p>
                     </div>
                     <div>
-                        <p class="text-sm opacity-60">Service</p>
+                        <p class="text-sm opacity-60">Usluga</p>
                         <p class="font-medium" id="viewService">-</p>
                     </div>
                     <div>
-                        <p class="text-sm opacity-60">Price</p>
+                        <p class="text-sm opacity-60">Cena</p>
                         <p class="font-medium" id="viewPrice">-</p>
                     </div>
                     <div>
-                        <p class="text-sm opacity-60">Start Time</p>
+                        <p class="text-sm opacity-60">Početak</p>
                         <p class="font-medium" id="viewStart">-</p>
                     </div>
                     <div>
-                        <p class="text-sm opacity-60">End Time</p>
+                        <p class="text-sm opacity-60">Završetak</p>
                         <p class="font-medium" id="viewEnd">-</p>
                     </div>
                     <div class="col-span-2">
@@ -452,24 +430,24 @@
 
             <div class="modal-action">
                 <form method="dialog">
-                    <button class="btn">Close</button>
+                    <button class="btn">Nazad</button>
                 </form>
             </div>
         </div>
         <form method="dialog" class="modal-backdrop">
-            <button>close</button>
+            <button>Nazad</button>
         </form>
     </dialog>
 
     {{-- Delete/Cancel Confirmation Modal --}}
     <dialog id="deleteModal" class="modal">
         <div class="modal-box">
-            <h3 class="font-bold text-lg">Cancel Appointment</h3>
-            <p class="py-4">Are you sure you want to cancel the appointment for "<span id="deleteClientName" class="font-semibold"></span>"? This action cannot be undone.</p>
+            <h3 class="font-bold text-lg">Otkaži Termin</h3>
+            <p class="py-4">Da li si sigruan da želiš otkazati termin za "<span id="deleteClientName" class="font-semibold"></span>"?</p>
             <div class="modal-action">
                 <form method="dialog">
-                    <button class="btn btn-ghost">No, Keep It</button>
-                    <button class="btn btn-error" onclick="confirmDelete()">Yes, Cancel</button>
+                    <button class="btn btn-ghost">Ne, Ostavi</button>
+                    <button class="btn btn-error" onclick="confirmDelete()">Da, Otkaži</button>
                 </form>
             </div>
         </div>
@@ -494,7 +472,9 @@
 
         // Open Add Modal
         function openAddModal() {
-            document.getElementById('modalTitle').textContent = 'Book New Appointment';
+
+            document.getElementById('modalTitle').textContent = 'Zakaži Novi Termin';
+
             document.getElementById('appointmentClient').value = '';
             document.getElementById('appointmentBarber').value = '';
             document.getElementById('appointmentService').value = '';
@@ -503,7 +483,7 @@
             document.getElementById('appointmentEndDate').value = '';
             document.getElementById('appointmentEndTime').value = '';
             document.getElementById('appointmentPrice').value = '';
-            document.getElementById('appointmentStatus').value = 'confirmed';
+            document.getElementById('appointmentStatus').value = 'Potvrđeno';
             document.getElementById('appointmentNotes').value = '';
             
             currentAppointmentId = null;
@@ -512,7 +492,7 @@
 
         // Open Edit Modal
         function openEditModal(appointmentId) {
-            document.getElementById('modalTitle').textContent = 'Edit Appointment';
+            document.getElementById('modalTitle').textContent = 'Izmeni Termin';
             
             // Example data - replace with actual data fetch
             document.getElementById('appointmentClient').value = '1';
@@ -537,6 +517,10 @@
 
         // Save Appointment
         function saveAppointment() {
+            const form = document.getElementById('appointmentForm');
+            form.action = "/admin/termini/dodaj";
+            document.getElementById('methodField').innerHTML = '';
+
             const client = document.getElementById('appointmentClient').value;
             const barber = document.getElementById('appointmentBarber').value;
             const service = document.getElementById('appointmentService').value;
@@ -548,28 +532,12 @@
             const status = document.getElementById('appointmentStatus').value;
             const notes = document.getElementById('appointmentNotes').value;
 
-            // Validation
             if (!client || !barber || !service || !startDate || !startTime || !endDate || !endTime || !price) {
                 alert('Please fill in all required fields');
                 return;
             }
 
-            // In a real app, you would submit this data to your Laravel backend
-            console.log('Saving appointment:', {
-                id: currentAppointmentId,
-                client_id: client,
-                barber_id: barber,
-                service_id: service,
-                start_time: `${startDate} ${startTime}:00`,
-                end_time: `${endDate} ${endTime}:00`,
-                price,
-                status,
-                notes
-            });
-
-            // Show success message
-            alert(currentAppointmentId ? 'Appointment updated successfully!' : 'Appointment booked successfully!');
-            
+            // Show success message            
             // Close modal
             closeAppointmentModal();
             
@@ -578,16 +546,18 @@
         }
 
         // View Appointment Details
-        function viewAppointment(appointmentId) {
-            // Example data - replace with actual data fetch
-            document.getElementById('viewClient').textContent = 'Alex Thompson';
-            document.getElementById('viewBarber').textContent = 'Marcus Johnson';
-            document.getElementById('viewService').textContent = 'Haircut & Beard Combo';
-            document.getElementById('viewPrice').textContent = '$45';
-            document.getElementById('viewStart').textContent = 'Apr 09, 2026 09:00 AM';
-            document.getElementById('viewEnd').textContent = 'Apr 09, 2026 09:45 AM';
-            document.getElementById('viewStatus').textContent = 'Confirmed';
-            document.getElementById('viewNotes').textContent = 'Client prefers scissors over clipper';
+        function viewAppointment(appointment) {
+
+            document.getElementById('viewClient').textContent = appointment.client.name ;
+            document.getElementById('viewBarber').textContent = appointment.barber.name;
+            document.getElementById('viewService').textContent = appointment.service.name;
+            document.getElementById('viewPrice').textContent = appointment.price;
+            document.getElementById('viewStart').textContent =     new Date(appointment.start_time.replace(' ', 'T')).toLocaleString('sr-RS');
+            document.getElementById('viewEnd').textContent = appointment.end_time
+                ? new Date(appointment.end_time.replace(' ', 'T')).toLocaleString('sr-RS')
+                : 'N/A';            
+            document.getElementById('viewStatus').textContent = appointment.status;
+            document.getElementById('viewNotes').textContent = appointment.notes || 'Nema napomene';
             
             document.getElementById('viewModal').showModal();
         }
