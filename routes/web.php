@@ -32,11 +32,13 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/frizeri/dodaj', [AdminBarberController::class, 'store'])->name('dodaj');
     Route::put('/frizeri/izmeni/{id}', [AdminBarberController::class, 'update'])->name('izmeni');
 
-
+    // Appointments
     Route::get('/termini', [AdminAppointmentController::class, 'index'])->name('termini');
     Route::post('/termini/dodaj', [AdminAppointmentController::class, 'store'])->name('dodaj');
     Route::get('/termini/potvrdi/{id}', [AdminAppointmentController::class, 'confirm'])->name('potvrdi');
     Route::get('/termini/završi/{id}', [AdminAppointmentController::class, 'completed'])->name('završi');
+    Route::put('/termini/izmeni/{id}', [AdminAppointmentController::class, 'store'])->name('izmeni');
+    Route::delete('/termini/obrisi/{id}', [AdminAppointmentController::class, 'destroy'])->name('obrisi');
 
 
     Route::get('/klijenti', [AdminClientController::class, 'index'])->name('klijenti');

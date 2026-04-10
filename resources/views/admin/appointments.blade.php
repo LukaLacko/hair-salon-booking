@@ -68,7 +68,7 @@
                 <div class="card bg-base-100 shadow-xl">
                     <div class="card-body">
                         <div class="flex items-center justify-between">
-                            <h2 class="card-title text-sm font-medium">Zakazano</h2>
+                            <h2 class="card-title text-sm font-medium">Potvrđeno</h2>
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
@@ -179,7 +179,7 @@
                 <div class="card-body">
                     <h2 class="card-title mb-4">Termini</h2>
                     
-                    <div class="overflow-x-auto">
+                    <div class="overflow-x-auto hidden md:block">
                         <table class="table table-zebra">
                             <thead>
                                 <tr>
@@ -214,7 +214,7 @@
                                             </div>
                                         </div>
                                     </td>
-                                    <td>{{ $appointment->barber->name }}</td>
+                                    <td >{{ $appointment->barber->name }}</td>
                                     <td>{{ $appointment->service->name}}</td>
                                     <td>{{ $appointment->duration }}</td>
                                     <td>{{ number_format($appointment->price, 0, ',', '.') }} din</td>
@@ -256,7 +256,7 @@
                                                     </svg>
                                                     Pogledaj detalje
                                                 </a></li>
-                                                <li><a onclick="openEditModal({{ $appointment['id'] }})">
+                                                <li><a onclick="openEditModal({{ json_encode($appointment) }})">
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                                     </svg>
@@ -292,6 +292,36 @@
                             </tbody>
                         </table>
                     </div>
+                    <div class="grid grid-cols-1 gap-4 md:hidden">
+                        @foreach($appointments as $appointment)
+                        <div class="card bg-base-100 shadow-lg p-4 border-l-4 border-primary">
+                            <div class="flex justify-between items-start">
+                                <h3 class="font-bold text-lg">{{ $appointment->barber->name }}</h3>
+                                    @if($appointment->status === 'Potvrđeno')
+                                        <span class="badge badge-success text-xs">{{ $appointment->status }}</span>
+                                    @elseif($appointment->status === 'Na čekanju')
+                                        <span class="badge badge-warning text-xs">{{ $appointment->status }}</span>
+                                    @elseif($appointment->status === 'Završeno')
+                                        <span class="badge badge-primary text-xs">{{ $appointment->status }}</span>
+                                    @else
+                                        <span class="badge badge-error text-xs">{{ $appointment->status }}</span>
+                                    @endif
+                            </div>
+                            <p class="text-sm opacity-100 my-2">Klijent: {{ $appointment->client->name}}</p>
+                            <p class="text-sm opacity-60 my-2">{{ $appointment->notes}}</p>
+                            <div class="flex justify-end gap-2 mt-2">
+                                <button class="btn btn-sm btn-info" onclick="openEditModal({{ json_encode($appointment) }})">Edit</button>
+                                <button class="btn btn-sm btn-error" onclick="openDeleteModal({{ $appointment->id }}, '{{ $appointment->client->name }}')">Delete</button>
+                                @if($appointment['status'] === 'Potvrđeno')
+                                    <a href="{{ route('admin.završi', $appointment->id) }}" class="btn btn-sm btn-outline-success">Završi</a>
+                                @endif
+                                @if($appointment['status'] === 'Na čekanju')
+                                    <a href="{{ route('admin.potvrdi', $appointment->id) }}" class="btn btn-sm btn-outline-success">Potvrdi</a>
+                                @endif
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
                 </div>
             </div>
 
@@ -305,6 +335,7 @@
             
             <form id="appointmentForm" method="POST">
                 @csrf
+                <div id="methodField"></div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     
                     {{-- Client Selection --}}
@@ -478,9 +509,11 @@
             <h3 class="font-bold text-lg">Otkaži Termin</h3>
             <p class="py-4">Da li si sigruan da želiš otkazati termin za "<span id="deleteClientName" class="font-semibold"></span>"?</p>
             <div class="modal-action">
-                <form method="dialog">
-                    <button class="btn btn-ghost">Ne, Ostavi</button>
-                    <button class="btn btn-error" onclick="confirmDelete()">Da, Otkaži</button>
+                <form method="POST" id="deleteForm">
+                    @csrf
+                    @method('DELETE')
+                    <button type="button" class="btn btn-ghost" onclick="document.getElementById('deleteModal').close()">Ne, Ostavi</button>
+                    <button class="btn btn-error" type="submit">Da, Otkaži</button>
                 </form>
             </div>
         </div>
@@ -524,22 +557,56 @@
         }
 
         // Open Edit Modal
-        function openEditModal(appointmentId) {
+        function openEditModal(appointment) {
+            console.log("Start:", appointment.start_time);
+            console.log("End:", appointment.end_time);
+            const form = document.getElementById('appointmentForm');
+            form.action = `/admin/termini/izmeni/${appointment.id}`;
+            document.getElementById('methodField').innerHTML = '<input type="hidden" name="_method" value="PUT">';
+
+
             document.getElementById('modalTitle').textContent = 'Izmeni Termin';
             
-            // Example data - replace with actual data fetch
-            document.getElementById('appointmentClient').value = '1';
-            document.getElementById('appointmentBarber').value = '1';
-            document.getElementById('appointmentService').value = '4';
-            document.getElementById('appointmentStartDate').value = '2026-04-09';
-            document.getElementById('appointmentStartTime').value = '09:00';
-            document.getElementById('appointmentEndDate').value = '2026-04-09';
-            document.getElementById('appointmentEndTime').value = '09:45';
-            document.getElementById('appointmentPrice').value = '45';
-            document.getElementById('appointmentStatus').value = 'confirmed';
-            document.getElementById('appointmentNotes').value = 'Client prefers scissors over clipper';
+            document.getElementById('appointmentClient').value = appointment.client_id;
+            document.getElementById('appointmentBarber').value = appointment.barber_id;
+            document.getElementById('appointmentService').value = appointment.service_id;
+
+            // Obrada Start Vremena
+            if (appointment.start_time) {
+                // Delimo string tamo gde je slovo "T"
+                const parts = appointment.start_time.split('T'); 
+                
+                // parts[0] je "2026-04-30" -> to HTML date voli
+                document.getElementById('appointmentStartDate').value = parts[0]; 
+                
+                if (parts[1]) {
+                    // parts[1] je "17:55:00.000000Z" -> uzimamo samo "17:55"
+                    const timeOnly = parts[1].substring(0, 5);
+                    document.getElementById('appointmentStartTime').value = timeOnly;
+                }
+            }
+
+            // Obrada End Vremena
+            if (appointment.end_time) {
+                const parts = appointment.end_time.split('T');
+                
+                document.getElementById('appointmentEndDate').value = parts[0];
+                
+                if (parts[1]) {
+                    const timeOnly = parts[1].substring(0, 5);
+                    document.getElementById('appointmentEndTime').value = timeOnly;
+                }
+            } else {
+                document.getElementById('appointmentEndDate').value = '';
+                document.getElementById('appointmentEndTime').value = '';
+            }
+
+
+            document.getElementById('appointmentPrice').value = appointment.price;
+            document.getElementById('appointmentStatus').value = appointment.status;
+            document.getElementById('appointmentNotes').value = appointment.notes || '';
             
-            currentAppointmentId = appointmentId;
+            currentAppointmentId = appointment.id;
             document.getElementById('appointmentModal').showModal();
         }
 
@@ -551,7 +618,7 @@
         // Save Appointment
         function saveAppointment() {
             const form = document.getElementById('appointmentForm');
-            form.action = "/admin/termini/dodaj";
+            form.action = `/admin/termini/dodaj`;
             document.getElementById('methodField').innerHTML = '';
 
             const client = document.getElementById('appointmentClient').value;
@@ -599,32 +666,23 @@
         function confirmAppointment(appointmentId) {
             console.log('Confirming appointment:', appointmentId);
             alert('Appointment confirmed successfully!');
-            // In a real app, update the status in the backend
-            // location.reload();
+
         }
 
         // Complete Appointment
         function completeAppointment(appointmentId) {
             console.log('Completing appointment:', appointmentId);
             alert('Appointment marked as completed!');
-            // In a real app, update the status in the backend
-            // location.reload();
+
         }
 
         // Open Delete Modal
         function openDeleteModal(appointmentId, clientName) {
-            deleteAppointmentId = appointmentId;
+            const form = document.getElementById('deleteForm'); 
+            form.action = `/admin/termini/obrisi/${appointmentId}`; 
             document.getElementById('deleteClientName').textContent = clientName;
             document.getElementById('deleteModal').showModal();
         }
 
-        // Confirm Delete
-        function confirmDelete() {
-            console.log('Cancelling appointment:', deleteAppointmentId);
-            alert('Appointment cancelled successfully!');
-            document.getElementById('deleteModal').close();
-            // In a real app, update the status in the backend
-            // location.reload();
-        }
     </script>
 </x-app-layout>

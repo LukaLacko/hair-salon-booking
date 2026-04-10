@@ -99,5 +99,37 @@ class AppointmentController extends Controller
         $appointment->status = 'Završeno';
         $appointment->save();
 
-        return redirect()->back()->with('success', 'Uspešno završen termin!');    }
+        return redirect()->back()->with('success', 'Uspešno završen termin!');   
+    }
+
+    public function update(Request $request, $id)
+    {       
+        if(empty($request->barber_id) || empty($request->client_id) || empty($request->service_id) || empty($request->start_time) || empty($request->status) || empty($request->price))
+        {
+            return redirect()->back()->with('error', 'Morate popuniti sva obavezna polja!');
+        }
+
+        $start = Carbon::parse($request->start_date . ' ' . $request->start_time);
+        $end = Carbon::parse($request->end_date . ' ' . $request->end_time);
+
+        $appointment = Appointment::findOrFail($id);
+        $appointment->barber_id = $request->barber_id;
+        $appointment->client_id = $request->client_id;
+        $appointment->service_id = $request->service_id;
+        $appointment->start_time = $start;
+        $appointment->end_time = $end;
+        $appointment->status = $request->status;
+        $appointment->notes = $request->notes;
+        $appointment->price = $request->price;
+        $appointment->save();        
+
+        return redirect()->back()->with('success', 'Uspešno ste izmenili termin!');
+    }
+
+    public function destroy($id){
+        $appointment = Appointment::findOrFail($id);
+        $appointment->delete();
+
+        return redirect()->back()->with('success', 'Uspešno ste obrisali termin!');
+    }
 }
