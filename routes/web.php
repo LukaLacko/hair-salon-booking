@@ -42,6 +42,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
 
     Route::get('/klijenti', [AdminClientController::class, 'index'])->name('klijenti');
+    Route::post('/klijenti/dodaj', [AdminClientController::class, 'store'])->name('dodaj');
+    Route::delete('/klijenti/obrisi/{id}', [AdminClientController::class, 'destroy'])->name('obrisi');
+    Route::put('/klijenti/izmeni/{id}', [AdminClientController::class, 'update'])->name('izmeni');
 });
 
 Route::middleware(['auth', 'barber'])->prefix('barber')->name('barber.')->group(function(){
