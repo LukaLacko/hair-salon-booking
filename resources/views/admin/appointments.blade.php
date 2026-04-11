@@ -641,8 +641,7 @@
             // Close modal
             closeAppointmentModal();
             
-            // In a real app, you would reload the page or update the table
-            // location.reload();
+
         }
 
         // View Appointment Details

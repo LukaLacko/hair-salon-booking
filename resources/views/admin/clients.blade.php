@@ -300,7 +300,9 @@
         <div class="modal-box w-11/12 max-w-2xl">
             <h3 class="font-bold text-lg mb-4" id="modalTitle">Dodaj Novog Klijenta</h3>
             
-            <form method="dialog" id="clientForm">
+            <form method="POST" id="clientForm">
+                @csrf
+                <div id="methodField"></div>
                 <div class="space-y-4">
                     
                     {{-- Name --}}
@@ -359,7 +361,7 @@
 
                 <div class="modal-action">
                     <button type="button" class="btn btn-ghost" onclick="closeClientModal()">Nazad</button>
-                    <button type="button" class="btn btn-primary" onclick="saveClient()">
+                    <button type="submit" class="btn btn-primary">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                         </svg>
@@ -424,6 +426,10 @@
 
         // Open Edit Modal
         function openEditModal(client) {
+            const form = document.getElementById('clientForm');
+            form.action = `/admin/klijenti/izmeni/${client.id}`;
+            document.getElementById('methodField').innerHTML = '<input type="hidden" name="_method" value="PUT">';
+
             document.getElementById('modalTitle').textContent = 'Izmeni Klijenta';
             document.getElementById('clientName').value = client.name;
             document.getElementById('clientEmail').value = client.email;
@@ -440,6 +446,10 @@
 
         // Save Client with Validation
         function saveClient() {
+            const form = document.getElementById('clientForm');
+            form.action = `/admin/klijenti/dodaj`;
+            document.getElementById('methodField').innerHTML = '';
+
             const name = document.getElementById('clientName').value.trim();
             const email = document.getElementById('clientEmail').value.trim();
             const phone = document.getElementById('clientPhone').value.trim();

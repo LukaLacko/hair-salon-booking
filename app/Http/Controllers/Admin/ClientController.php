@@ -69,5 +69,7 @@ class ClientController extends Controller
         $client->phone = $request->phone;
         $client->notes = $request->notes;
         $client->save();
+
+        return redirect()->back()->with('success', 'Uspešno ste izmenili klijenta!');
     }
 }
