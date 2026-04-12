@@ -390,7 +390,7 @@
                 <span class="text-warning">⚠️ Napomena: Brisanje klijenta može uticati na statistiku. Savetujemo brisanje samo na lični zahtev klijenta.</span>
             </p>
             <div class="modal-action">
-                <form method="POST" id="deletForm">
+                <form method="POST" id="deleteForm">
                     @csrf
                     @method('DELETE')
                     <button type="button" class="btn btn-ghost" onclick="document.getElementById('deleteModal').close()">Nazad</button>
@@ -463,7 +463,8 @@
 
         // Open Delete Modal
         function openDeleteModal(clientId, clientName) {
-            deleteClientId = clientId;
+            const form = document.getElementById('deleteForm');
+            form.action = `/admin/klijenti/obrisi/${clientId}`;
             document.getElementById('deleteClientName').textContent = clientName;
             document.getElementById('deleteModal').showModal();
         }
