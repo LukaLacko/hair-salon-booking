@@ -116,21 +116,23 @@
                 <div class="card-body p-4 md:p-6">
                     <div class="flex flex-col md:flex-row gap-4">
                         <div class="form-control flex-1">
-                            <div class="input-group">
-                                <input type="text" placeholder="Search clients by name, email, or phone..." class="input input-bordered w-full" id="searchInput" onkeyup="searchClients()" />
-                                <button class="btn btn-square">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                    </svg>
-                                </button>
-                            </div>
+                            <form action="{{ route('admin.klijenti') }}">
+                                <div class="input-group">
+                                    <input type="text" name="search" placeholder="Pretraži korisnika po imenu, email-u, telefonu, napomenama..." value="{{ request('search') }}" class="input input-bordered w-full" id="searchInput" onchange="this.form.submit()" />
+                                </div>
+                            </form>
                         </div>
-                        <button class="btn btn-ghost" onclick="clearSearch()">
+                        <button class="btn btn-square">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </button>
+                        <a class="btn btn-ghost" href="{{ route('admin.klijenti') }}">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                             </svg>
-                            Reset
-                        </button>
+                            Prikaži Sve
+                        </a>
                     </div>
                 </div>
             </div>

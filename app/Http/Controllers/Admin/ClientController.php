@@ -9,9 +9,23 @@ use Laravel\Prompts\Clear;
 
 class ClientController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $clients = Client::all();
+        $search = $request->query('search');
+
+
+
+        $clients = Client::query()
+            ->when($search, function($query, $search){
+                $query->where(function ($q) use ($search){
+                    $q->where('name', 'LIKE', "%{$search}%")
+                        ->orWhere('email', 'LIKE', "%{$search}%")
+                        ->orWhere('phone', 'Like', "%{$search}%")
+                        ->orWhere('notes', 'LIKE', "%{$search}%");
+                });
+            })
+            ->latest()
+            ->get();
         
         $totalClients = Client::count();
 
@@ -28,7 +42,7 @@ class ClientController extends Controller
 
         $totalWithEmail = Client::whereNotNull('email')->count();
 
-        return view('admin.clients', compact('clients', 'totalClients', 'thisMonth', 'thisYear', 'totalWithNotes', 'totalWithEmail', 'totalClientsThisMonth'));
+        return view('admin.clients', compact('clients', 'totalClients', 'thisMonth', 'thisYear', 'totalWithNotes', 'totalWithEmail', 'totalClientsThisMonth', 'search'));
     }
 
     public function store(Request $request)

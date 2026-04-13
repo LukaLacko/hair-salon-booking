@@ -102,7 +102,7 @@
                         <div class="text-2xl font-bold">
                             {{ number_format($todaysRevenue, 0, ',', '.') }} din
                         </div>
-                        <p class="text-xs opacity-60">Expected prihod</p>
+                        <p class="text-xs opacity-60">Prihod</p>
                     </div>
                 </div>
             </div>
