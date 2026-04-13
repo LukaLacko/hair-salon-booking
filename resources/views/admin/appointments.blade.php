@@ -205,12 +205,12 @@
                                             <div class="avatar placeholder">
                                                 <div class="bg-neutral text-neutral-content rounded-full w-8 h-8 flex items-center justify-center">
                                                     <span class="text-xs font-semibold uppercase leading-none">
-                                                        {{ substr($appointment->client->name, 0, 2) }}
+                                                        {{ substr($appointment->client?->name ?? 'Obrisan Klijent', 0, 2) }}
                                                     </span>
                                                 </div>
                                             </div>
                                             <div>
-                                                <div class="font-medium">{{ $appointment->client->name }}</div>
+                                                <div class="font-medium">{{ $appointment->client?->name ?? 'Obrisan Klijent' }}</div>
                                             </div>
                                         </div>
                                     </td>
@@ -278,7 +278,7 @@
                                                     Označi završeno
                                                 </a></li>
                                                 @endif
-                                                <li><a onclick="openDeleteModal({{ $appointment->id }}, '{{ $appointment->client->name }}')">
+                                                <li><a onclick="openDeleteModal({{ $appointment->id }}, '{{ $appointment->client?->name ?? 'Obrisan Klijent' }}')">
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                                     </svg>
@@ -307,11 +307,11 @@
                                         <span class="badge badge-error text-xs">{{ $appointment->status }}</span>
                                     @endif
                             </div>
-                            <p class="text-sm opacity-100 my-2">Klijent: {{ $appointment->client->name}}</p>
+                            <p class="text-sm opacity-100 my-2">Klijent: {{ $appointment->client?->name ?? 'Obrisan Klijent'}}</p>
                             <p class="text-sm opacity-60 my-2">{{ $appointment->notes}}</p>
                             <div class="flex justify-end gap-2 mt-2">
                                 <button class="btn btn-sm btn-info" onclick="openEditModal({{ json_encode($appointment) }})">Edit</button>
-                                <button class="btn btn-sm btn-error" onclick="openDeleteModal({{ $appointment->id }}, '{{ $appointment->client->name }}')">Delete</button>
+                                <button class="btn btn-sm btn-error" onclick="openDeleteModal({{ $appointment->id }}, '{{ $appointment->client?->name ?? 'Obrisan Klijent' }}')">Delete</button>
                                 @if($appointment['status'] === 'Potvrđeno')
                                     <a href="{{ route('admin.završi', $appointment->id) }}" class="btn btn-sm btn-outline-success">Završi</a>
                                 @endif
@@ -367,13 +367,13 @@
                     {{-- Service Selection --}}
                     <div class="form-control md:col-span-2">
                         <label class="label">
-                            <span class="label-text">Service *</span>
+                            <span class="label-text">Usluge *</span>
                         </label>
                         <select class="select select-bordered" id="appointmentService" onchange="updatePrice()" name="service_id">
-                            <option disabled selected>Select a service</option>
+                            <option disabled selected>Izaberi uslugu</option>
                             @foreach($services as $service)
                             <option value="{{ $service->id }}" data-price="{{ number_format($service->price, 0, ',', '.') }}">
-                                {{ $service->name }} - ${{ number_format($service->price, 0, ',', '.')}}
+                                {{ $service->name }} - {{ number_format($service->price, 0, ',', '.')}} din
                             </option>
                             @endforeach
                         </select>
@@ -632,12 +632,6 @@
             const status = document.getElementById('appointmentStatus').value;
             const notes = document.getElementById('appointmentNotes').value;
 
-            if (!client || !barber || !service || !startDate || !startTime || !endDate || !endTime || !price) {
-                alert('Please fill in all required fields');
-                return;
-            }
-
-            // Show success message            
             // Close modal
             closeAppointmentModal();
             
@@ -647,7 +641,7 @@
         // View Appointment Details
         function viewAppointment(appointment) {
 
-            document.getElementById('viewClient').textContent = appointment.client.name ;
+            document.getElementById('viewClient').textContent = appointment.client?.name ?? 'Obrisan Klijent' ;
             document.getElementById('viewBarber').textContent = appointment.barber.name;
             document.getElementById('viewService').textContent = appointment.service.name;
             document.getElementById('viewPrice').textContent = appointment.price;
@@ -659,20 +653,6 @@
             document.getElementById('viewNotes').textContent = appointment.notes || 'Nema napomene';
             
             document.getElementById('viewModal').showModal();
-        }
-
-        // Confirm Appointment
-        function confirmAppointment(appointmentId) {
-            console.log('Confirming appointment:', appointmentId);
-            alert('Appointment confirmed successfully!');
-
-        }
-
-        // Complete Appointment
-        function completeAppointment(appointmentId) {
-            console.log('Completing appointment:', appointmentId);
-            alert('Appointment marked as completed!');
-
         }
 
         // Open Delete Modal

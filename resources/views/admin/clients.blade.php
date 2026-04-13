@@ -417,12 +417,16 @@
 
         // Open Add Modal
         function openAddModal() {
+            const form = document.getElementById('clientForm');
+            form.action = '/admin/klijenti/dodaj';
+            document.getElementById('methodField').innerHTML = '';
             document.getElementById('modalTitle').textContent = 'Dodaj Novog Klijenta';
             document.getElementById('clientName').value = '';
             document.getElementById('clientEmail').value = '';
             document.getElementById('clientPhone').value = '';
             document.getElementById('clientNotes').value = '';
             currentClientId = null;
+
             document.getElementById('clientModal').showModal();
         }
 
@@ -433,7 +437,7 @@
             document.getElementById('methodField').innerHTML = '<input type="hidden" name="_method" value="PUT">';
 
             document.getElementById('modalTitle').textContent = 'Izmeni Klijenta';
-            document.getElementById('clientName').value = client.name;
+            document.getElementById('clientName').value = client?.name ?? 'Obrisan Klijent';
             document.getElementById('clientEmail').value = client.email;
             document.getElementById('clientPhone').value = client.phone;
             document.getElementById('clientNotes').value = client.notes || '';
@@ -446,38 +450,12 @@
             document.getElementById('clientModal').close();
         }
 
-        // Save Client with Validation
-        function saveClient() {
-            const form = document.getElementById('clientForm');
-            form.action = `/admin/klijenti/dodaj`;
-            document.getElementById('methodField').innerHTML = '';
-
-            const name = document.getElementById('clientName').value.trim();
-            const email = document.getElementById('clientEmail').value.trim();
-            const phone = document.getElementById('clientPhone').value.trim();
-            const notes = document.getElementById('clientNotes').value.trim();
-            
-            // Close modal
-            closeClientModal();
-            
-
-        }
-
         // Open Delete Modal
         function openDeleteModal(clientId, clientName) {
             const form = document.getElementById('deleteForm');
             form.action = `/admin/klijenti/obrisi/${clientId}`;
             document.getElementById('deleteClientName').textContent = clientName;
             document.getElementById('deleteModal').showModal();
-        }
-
-        // Confirm Delete
-        function confirmDelete() {
-        
-            
-            // Close modal
-            document.getElementById('deleteModal').close();
-
         }
     </script>
 </x-app-layout>

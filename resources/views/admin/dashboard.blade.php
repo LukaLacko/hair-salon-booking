@@ -225,7 +225,7 @@
                         <tbody>
                             @foreach($appointments as $appointment)
                             <tr>
-                                <td class="font-bold">{{ $appointment->client->name }}</td>
+                                <td class="font-bold">{{ $appointment->client?->name ?? 'Obrisan Klijent' }}</td>
                                 <td class="font-medium">{{ $appointment->barber->name }}</td>
                                 <td> <span class="badge badge-soft badge-neutral font-bold">{{ $appointment->service->name }}</span></td>
                                 <td>{{ \Carbon\Carbon::parse($appointment->end_time)->format('d.m.Y') }}</td>
