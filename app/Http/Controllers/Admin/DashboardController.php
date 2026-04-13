@@ -31,6 +31,11 @@ class DashboardController extends Controller
             ->orderBy('end_time', 'desc')
             ->first();
 
+        $last8Appointments = Appointment::with(['client', 'barber', 'service'])
+            ->latest()
+            ->take(8)
+            ->get();
+
         $thisMonthProfit = Appointment::where('status', 'Završeno')
             ->whereMonth('end_time', now()->month)
             ->whereYear('end_time', now()->year)
@@ -46,6 +51,6 @@ class DashboardController extends Controller
         {
             $profitChange = (($thisMonthProfit - $lastMonthProfit) / $lastMonthProfit) * 100;          
         }
-        return view('admin.dashboard', compact("barbers", "appointments", "totalAppointments", "totalBarbers", "monthlyProfit", "monthlyAppointments", "lastAppointment", 'profitChange'));
+        return view('admin.dashboard', compact("barbers", "appointments", "totalAppointments", "totalBarbers", "monthlyProfit", "monthlyAppointments", "lastAppointment", 'profitChange', 'last8Appointments'));
     }
 }

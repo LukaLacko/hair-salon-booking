@@ -255,24 +255,75 @@
       </label>
     </div>
     <div class="drawer-side">
-      <label for="my-drawer-3" aria-label="close sidebar" class="drawer-overlay"></label>
-      <ul class="menu bg-base-300 min-h-full w-80 p-4">
-        <!-- Sidebar content here -->
-        <li><a>Dashboard</a></li>
-        <li><a>Usluge</a></li>
-        <li><a>Frizeri</a></li>
-        <li><a>Termini</a></li>
-
-        <div class="flex items-center gap-3">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-            </svg>
-            <div>
-                <li><a class="text-sm font-medium">Klijenti</a></li>
+        <label for="my-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
+        <ul class="menu bg-base-300 min-h-full w-64 flex flex-col justify-between">
+            
+            {{-- Gornji deo menija --}}
+            <div class="space-y-2">
+                <div class="px-4 py-2 mb-4">
+                    <h1 class="text-xl font-bold flex items-center">
+                        Sidebar
+                    </h1>
+                </div>
+    
+                <li>
+                    <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }} flex items-center gap-3 px-4 py-3 rounded-xl transition-all">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                        </svg>
+                        <span class="font-medium">Dashboard</span>
+                    </a>
+                </li>        
+    
+                <li>
+                    <a href="{{ route('admin.termini') }}" class="{{ request()->routeIs('admin.termini*') ? 'active' : '' }} flex items-center gap-3 px-4 py-3 rounded-xl transition-all">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        <span class="font-medium">Termini</span>
+                    </a>
+                </li>        
+    
+                <li>
+                    <a href="{{ route('admin.klijenti') }}" class="{{ request()->routeIs('admin.klijenti*') ? 'active' : '' }} flex items-center gap-3 px-4 py-3 rounded-xl transition-all">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>
+                        <span class="font-medium">Klijenti</span>
+                    </a>
+                </li>    
+                <li>
+                    <a href="{{ route('admin.usluge') }}" class="{{ request()->routeIs('admin.usluge*') ? 'active' : '' }} flex items-center gap-3 px-4 py-3 rounded-xl transition-all">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                        <span class="font-medium">Usluge</span>
+                    </a>
+                </li>        
+    
+                <li>
+                    <a href="{{ route('admin.frizeri') }}" class="{{ request()->routeIs('admin.frizeri*') ? 'active' : '' }} flex items-center gap-3 px-4 py-3 rounded-xl transition-all">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg>
+                        <span class="font-medium">Frizeri</span>
+                    </a>
+                </li>
             </div>
-        </div>  
-
-       </ul>
+    
+            <div class="mt-auto">
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="btn btn-ghost btn-block flex items-center gap-3 justify-start px-4 text-error hover:bg-error/10">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        </svg>
+                        <span>Odjavi se</span>
+                    </button>
+                </form>
+            </div>
+    
+        </ul>
     </div>
   </div>
 
