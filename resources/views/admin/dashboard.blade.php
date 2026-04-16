@@ -111,7 +111,7 @@
                                             @endif
                                         </td>
                                         <td class="text-center">{{ $barber->appointments_count }}</td>
-                                        <td class="text-right font-bold">${{ number_format($barber->total_profit) }}</td>
+                                        <td class="text-right font-bold">{{ number_format($barber->total_profit) }} din</td>
                                     </tr>
                                     @endforeach
                                 </tbody>
@@ -262,7 +262,7 @@
             <div class="space-y-2">
                 <div class="px-4 py-2 mb-4">
                     <h1 class="text-xl font-bold flex items-center">
-                        Sidebar
+                        {{ $user->name }}
                     </h1>
                 </div>
     

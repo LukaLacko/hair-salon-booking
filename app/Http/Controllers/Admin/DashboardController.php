@@ -6,11 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Models\Appointment;
 use App\Models\Barber;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
     public function index()
     {
+        $user = Auth::user();
+
         $barbers = Barber::withCount('appointments')
             ->withSum('appointments as total_profit', 'price')
             ->get();
@@ -51,6 +54,6 @@ class DashboardController extends Controller
         {
             $profitChange = (($thisMonthProfit - $lastMonthProfit) / $lastMonthProfit) * 100;          
         }
-        return view('admin.dashboard', compact("barbers", "appointments", "totalAppointments", "totalBarbers", "monthlyProfit", "monthlyAppointments", "lastAppointment", 'profitChange', 'last8Appointments'));
+        return view('admin.dashboard', compact("barbers", "appointments", "totalAppointments", "totalBarbers", "monthlyProfit", "monthlyAppointments", "lastAppointment", 'profitChange', 'last8Appointments', 'user'));
     }
 }
