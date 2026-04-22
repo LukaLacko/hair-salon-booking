@@ -8,9 +8,7 @@ use App\Http\Controllers\Admin\ServiceController as AdminServiceController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Support\Facades\Route;
-
 use App\Http\Controllers\Barber\DashboardController as BarberDashboardController;
-
 
 Route::get('/', function () {
     return view('welcome');
@@ -49,6 +47,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
 Route::middleware(['auth', 'barber'])->prefix('barber')->name('barber.')->group(function(){
     Route::get('/dashboard', [BarberDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard/završi/{id}', [BarberDashboardController::class, 'complete'])->name('završi');
 });
 
 
