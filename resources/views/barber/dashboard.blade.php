@@ -356,7 +356,7 @@
                                         @endforeach
 
 
-                                        <!-- Timeline Item - Upcoming (Next) -->
+                                        {{-- <!-- Timeline Item - Upcoming (Next) -->
                                         <div class="flex gap-4">
                                             <div class="flex flex-col items-center">
                                                 <div class="timeline-dot bg-primary"></div>
@@ -380,10 +380,10 @@
                                                     </p>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div> --}}
 
                                         <!-- Timeline Item - Break -->
-                                        <div class="flex gap-4">
+                                        {{-- <div class="flex gap-4">
                                             <div class="flex flex-col items-center">
                                                 <div class="timeline-dot bg-info"></div>
                                                 <div class="timeline-line flex-1 min-h-[80px]"></div>
@@ -405,32 +405,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-
-                                        <!-- Timeline Item - Last -->
-                                        <div class="flex gap-4">
-                                            <div class="flex flex-col items-center">
-                                                <div class="timeline-dot bg-gray-300"></div>
-                                            </div>
-                                            <div class="flex-1">
-                                                <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                                                    <div class="flex items-start justify-between mb-2">
-                                                        <div>
-                                                            <p class="font-bold text-gray-800">Lisa Thompson</p>
-                                                            <p class="text-sm text-gray-500">
-                                                                <i class="far fa-clock"></i>
-                                                                5:00 PM - 6:00 PM
-                                                            </p>
-                                                        </div>
-                                                        <div class="badge badge-ghost badge-sm">Upcoming</div>
-                                                    </div>
-                                                    <p class="text-sm text-gray-600">
-                                                        <i class="fas fa-cut mr-1"></i>
-                                                        Color & Style - $85.00
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        </div> --}}
                                     </div>
                                 </div>
                             </div>
@@ -444,13 +419,13 @@
                         <div class="flex flex-col md:flex-row items-start md:items-center justify-between mb-6 gap-4">
                             <h3 class="card-title">
                                 <i class="fas fa-calendar-alt"></i>
-                                Weekly Calendar
+                                Nedeljni Kalendar
                             </h3>
                             <div class="flex items-center gap-2">
                                 <button class="btn btn-outline btn-sm">
                                     <i class="fas fa-chevron-left"></i>
                                 </button>
-                                <span class="text-sm font-semibold px-4">April 17 - 23, 2026</span>
+                                <span class="text-sm font-semibold px-4">{{ now()->startOfWeek()->format('j')}}-{{ now()->endOfWeek()->format('j. F') }}</span>
                                 <button class="btn btn-outline btn-sm">
                                     <i class="fas fa-chevron-right"></i>
                                 </button>
@@ -466,35 +441,12 @@
                             <div class="min-w-[800px]">
                                 <!-- Days Header -->
                                 <div class="grid grid-cols-7 gap-px bg-gray-200 rounded-t-lg overflow-hidden">
-                                    <div class="bg-gray-100 p-3 text-center font-semibold text-sm">
-                                        <div class="text-gray-600">MON</div>
-                                        <div class="text-lg">17</div>
-                                    </div>
-                                    <div class="bg-gray-100 p-3 text-center font-semibold text-sm">
-                                        <div class="text-gray-600">TUE</div>
-                                        <div class="text-lg">18</div>
-                                    </div>
-                                    <div class="bg-gray-100 p-3 text-center font-semibold text-sm">
-                                        <div class="text-gray-600">WED</div>
-                                        <div class="text-lg">19</div>
-                                    </div>
-                                    <div class="bg-gray-100 p-3 text-center font-semibold text-sm">
-                                        <div class="text-gray-600">THU</div>
-                                        <div class="text-lg">20</div>
-                                    </div>
-                                    <div class="bg-primary/10 p-3 text-center font-semibold text-sm border-2 border-primary">
-                                        <div class="text-primary">FRI</div>
-                                        <div class="text-lg text-primary">21</div>
-                                        <div class="badge badge-primary badge-xs">Today</div>
-                                    </div>
-                                    <div class="bg-gray-100 p-3 text-center font-semibold text-sm">
-                                        <div class="text-gray-600">SAT</div>
-                                        <div class="text-lg">22</div>
-                                    </div>
-                                    <div class="bg-gray-100 p-3 text-center font-semibold text-sm">
-                                        <div class="text-gray-600">SUN</div>
-                                        <div class="text-lg">23</div>
-                                    </div>
+                                    @foreach($weekDays as $days)
+                                        <div class="bg-gray-100 p-3 text-center font-semibold text-sm">
+                                            <div class="text-gray-600 uppercase">{{ $days['day_name'] }}</div>
+                                            <div class="text-lg">{{ $days['day_number']}}</div>
+                                        </div>
+                                    @endforeach
                                 </div>
 
                                 <!-- Calendar Days -->

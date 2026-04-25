@@ -70,9 +70,21 @@ class DashboardController extends Controller
         
         $revenueChange = round($revenueChange, 1);
 
+        $startOfWeek = now()->startOfWeek();
+        $weekDays = [];
+
+        for($i = 0; $i < 7; $i++)
+        {
+            $date = $startOfWeek->copy()->addDays($i);
+            $weekDays[] = [
+              'day_name' => $date->translatedFormat('l'),
+              'day_number' => $date->format('j'),
+              'is_today' => $date->isToday(),  
+            ];
+        }
 
 
-        return view('barber.dashboard', compact('barber', 'appointmentsToday', 'appointmentsFinishedToday', 'todaysRevenue', 'revenueChange', 'appointmentsFinishedThisWeek', 'thisWeeksRevenue', 'upNextAppointment'));
+        return view('barber.dashboard', compact('barber', 'appointmentsToday', 'appointmentsFinishedToday', 'todaysRevenue', 'revenueChange', 'appointmentsFinishedThisWeek', 'thisWeeksRevenue', 'upNextAppointment', 'weekDays'));
     }
 
     public function complete($id)
