@@ -442,16 +442,41 @@
                                 <!-- Days Header -->
                                 <div class="grid grid-cols-7 gap-px bg-gray-200 rounded-t-lg overflow-hidden">
                                     @foreach($weekDays as $days)
-                                        <div class="bg-gray-100 p-3 text-center font-semibold text-sm">
-                                            <div class="text-gray-600 uppercase">{{ $days['day_name'] }}</div>
-                                            <div class="text-lg">{{ $days['day_number']}}</div>
-                                        </div>
+
+                                        @if ($days['is_today'])
+                                            <div class="bg-primary/10 p-3 text-center font-semibold text-sm border-2 border-primary">
+                                                <div class="text-primary uppercase">{{ $days['day_name'] }}</div>
+                                                <div class="text-lg text-primary">{{ $days['day_number'] }}</div>
+                                                <div class="badge badge-primary badge-xs">Danas</div>
+                                            </div>
+                                        @else
+
+                                            <div class="bg-gray-100 p-3 text-center font-semibold text-sm">
+                                                <div class="text-gray-600 uppercase">{{ $days['day_name'] }}</div>
+                                                <div class="text-lg">{{ $days['day_number']}}</div>
+                                            </div>
+                                        @endif
                                     @endforeach
                                 </div>
-
                                 <!-- Calendar Days -->
                                 <div class="grid grid-cols-7 gap-px bg-gray-200 rounded-b-lg overflow-hidden">
                                     <!-- Monday -->
+                                    @foreach($weekDays as $days)
+                                        <div class="calendar-day bg-white p-2">
+                                            <div class="space-y-1">
+                                                @foreach($appointmentsForWeek as $appointment)
+                                                    @if ($days['day_number'] == $appointment->start_time->format('j'))
+                                                        <div class="appointment-chip bg-success/20 text-success" onclick="document.getElementById('appointment_modal').showModal()">
+                                                            <div class="font-semibold">{{ $appointment->start_time->format('H:i A') }}</div>
+                                                            <div class="truncate">{{ $appointment->client->name }}</div>
+                                                        </div>
+                                                    @endif
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                    
+                                    {{-- <!-- Monday -->
                                     <div class="calendar-day bg-white p-2">
                                         <div class="space-y-1">
                                             <div class="appointment-chip bg-success/20 text-success" onclick="document.getElementById('appointment_modal').showModal()">
@@ -583,7 +608,7 @@
                                                 <div class="text-xs">Day Off</div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </div>
                         </div>

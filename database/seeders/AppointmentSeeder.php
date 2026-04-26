@@ -166,5 +166,49 @@ class AppointmentSeeder extends Seeder
         $appointment->notes = null;
         $appointment->price = 800;
         $appointment->save();
+
+        $appointment = new Appointment();
+        $appointment->barber_id = 1;
+        $appointment->client_id = 3;
+        $appointment->service_id = 1;
+        $appointment->start_time = '2026-4-25 20:00:00';
+        $appointment->end_time = '2026-4-25 20:30:00';
+        $appointment->status = 'Potvrđeno';
+        $appointment->notes = null;
+        $appointment->price = 800;
+        $appointment->save();
+
+        $appointment = new Appointment();
+        $appointment->barber_id = 1;
+        $appointment->client_id = 3;
+        $appointment->service_id = 1;
+        $appointment->start_time = '2026-4-25 11:00:00';
+        $appointment->end_time = '2026-4-25 11:30:00';
+        $appointment->status = 'Završeno';
+        $appointment->notes = null;
+        $appointment->price = 1000;
+        $appointment->save();
+
+        $appointment = new Appointment();
+        $appointment->barber_id = 1;
+        $appointment->client_id = 1;
+        $appointment->service_id = 6;
+        $appointment->start_time = '2026-4-25 10:00:00';
+        $appointment->end_time = '2026-4-25 10:30:00';
+        $appointment->status = 'Završeno';
+        $appointment->notes = null;
+        $appointment->price = 1500;
+        $appointment->save();
+
+        $appointment = new Appointment();
+        $appointment->barber_id = 1;
+        $appointment->client_id = 1;
+        $appointment->service_id = 2;
+        $appointment->start_time = '2026-4-25 21:00:00';
+        $appointment->end_time = '2026-4-25 21:30:00';
+        $appointment->status = 'Potvrđeno';
+        $appointment->notes = null;
+        $appointment->price = 2000;
+        $appointment->save();
     }
 }

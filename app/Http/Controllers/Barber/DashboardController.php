@@ -77,14 +77,23 @@ class DashboardController extends Controller
         {
             $date = $startOfWeek->copy()->addDays($i);
             $weekDays[] = [
-              'day_name' => $date->translatedFormat('l'),
+              'day_name' => $date->locale('sr')->translatedFormat('l'),
               'day_number' => $date->format('j'),
               'is_today' => $date->isToday(),  
             ];
         }
 
+        $appointmentsForWeek = Appointment::whereBetween('start_time', [
+            now()->startOfWeek(),
+            now()->endOfWeek()
+        ])
+        ->with('client', 'barber')
+        ->get();
 
-        return view('barber.dashboard', compact('barber', 'appointmentsToday', 'appointmentsFinishedToday', 'todaysRevenue', 'revenueChange', 'appointmentsFinishedThisWeek', 'thisWeeksRevenue', 'upNextAppointment', 'weekDays'));
+
+
+
+        return view('barber.dashboard', compact('barber', 'appointmentsToday', 'appointmentsFinishedToday', 'todaysRevenue', 'revenueChange', 'appointmentsFinishedThisWeek', 'thisWeeksRevenue', 'upNextAppointment', 'weekDays', 'appointmentsForWeek'));
     }
 
     public function complete($id)
