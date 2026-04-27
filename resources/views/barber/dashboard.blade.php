@@ -1,3 +1,36 @@
+@if(session('success'))
+<div id="success-alert" class="alert alert-success shadow-lg mb-4">
+    <span>{{ session('success') }}</span>
+</div>
+@endif
+
+@if(session('error'))
+<div id="error-alert" class="alert alert-error shadow-lg mb-4">
+    <span>{{ session('error') }}</span>
+</div>
+@endif
+
+<script>
+    setTimeout(function() {
+        const successAlert = document.getElementById('success-alert');
+        if (successAlert) {
+            successAlert.style.transition = 'opacity 1s';
+            successAlert.style.opacity = '0';
+            setTimeout(() => {
+                successAlert.style.display = 'none';
+            }, 1000);
+        }
+
+        const errorAlert = document.getElementById('error-alert');
+        if (errorAlert) {
+            errorAlert.style.transition = 'opacity 1s';
+            errorAlert.style.opacity = '0';
+            setTimeout(() => {
+                errorAlert.style.display = 'none';
+            }, 1000);
+        }
+    }, 3000);
+</script>
 <x-app-layout>
     <style>
         .sidebar-gradient {
