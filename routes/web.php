@@ -47,7 +47,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
 Route::middleware(['auth', 'barber'])->prefix('barber')->name('barber.')->group(function(){
     Route::get('/dashboard', [BarberDashboardController::class, 'index'])->name('dashboard');
-    Route::get('/dashboard/završi/{id}', [BarberDashboardController::class, 'complete'])->name('završi');
+    Route::patch('/dashboard/završi/{id}', [BarberDashboardController::class, 'complete'])->name('završi');
+    Route::patch('/dashboard/otkaži/{id}', [BarberDashboardController::class, 'cancel'])->name('otkaži');
 });
 
 

@@ -132,7 +132,7 @@
                         </div>
                     </div>
                     
-                    <div class="stats shadow bg-white">
+                    <div class="stats shadow-lg bg-white">
                         <div class="stat">
                             <div class="stat-figure text-success">
                                 <i class="fas fa-dollar-sign text-3xl"></i>
@@ -154,7 +154,7 @@
                         </div>
                     </div>
                     
-                    <div class="stats shadow bg-white">
+                    <div class="stats shadow-lg bg-white">
                         <div class="stat">
                             <div class="stat-figure text-warning">
                                 <i class="fas fa-star text-3xl"></i>
@@ -285,8 +285,35 @@
                                                         </div>
                                                     </div>
                                                 </div>
+
+                                            @elseif($appointment->status == 'Otkazano')
+                                                <!-- Timeline Item - Canceled-->                                       
+                                                <div class="flex gap-4">
+                                                    <div class="flex flex-col items-center">
+                                                        <div class="timeline-dot bg-error"></div>
+                                                        <div class="timeline-line flex-1 min-h-[80px]"></div>
+                                                    </div>
+                                                    <div class="flex-1 pb-6">
+                                                        <div class="bg-error/10 border border-error/20 rounded-lg p-4">
+                                                            <div class="flex items-start justify-between mb-2">
+                                                                <div>
+                                                                    <p class="font-bold text-gray-800">{{ $appointment->client->name }}</p>
+                                                                    <p class="text-sm text-gray-500">
+                                                                        <i class="far fa-clock"></i>
+                                                                        {{ \Carbon\Carbon::parse($appointment->start_time)->format('H:i A') }} - {{ \Carbon\Carbon::parse($appointment->end_time)->format('H:i A') }}
+                                                                    </p>
+                                                                </div>
+                                                                <div class="badge badge-error badge-sm">Otkazano</div>
+                                                            </div>
+                                                            <p class="text-sm text-gray-600">
+                                                                <i class="fas fa-cut mr-1"></i>
+                                                                {{ $appointment->service->name }} - {{ number_format($appointment->price, 0, ',', '.') }} din
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             @endif
-                                            @if (now()->between($appointment->start_time, $appointment->end_time) && $appointment->status !== 'Završeno')
+                                            @if (now()->between($appointment->start_time, $appointment->end_time) && $appointment->status !== 'Završeno' && $appointment->status != 'Otkazano')
                                                 <!-- Timeline Item - In Progress -->
                                                 <div class="flex gap-4">
                                                     <div class="flex flex-col items-center">
@@ -300,7 +327,7 @@
                                                                     <p class="font-bold text-gray-800">{{ $appointment->client->name }}</p>
                                                                     <p class="text-sm text-gray-500">
                                                                         <i class="far fa-clock"></i>
-                                                                        11:30 AM - 12:00 PM
+                                                                        {{ $appointment->start_time->format('H:i A') }} - {{ $appointment->end_time->format('H:i A') }}
                                                                     </p>
                                                                 </div>
                                                                 <div class="badge badge-warning badge-sm gap-1">
@@ -310,17 +337,25 @@
                                                             </div>
                                                             <p class="text-sm text-gray-600 mb-2">
                                                                 <i class="fas fa-cut mr-1"></i>
-                                                                Beard Trim - $20.00
+                                                                {{ $appointment->service->name }} - {{ $appointment->price }} din
                                                             </p>
                                                             <div class="flex gap-2">
-                                                                <button class="btn btn-success btn-xs">
-                                                                    <i class="fas fa-check"></i>
-                                                                    Complete
-                                                                </button>
-                                                                <button class="btn btn-ghost btn-xs">
-                                                                    <i class="fas fa-pause"></i>
-                                                                    Pause
-                                                                </button>
+                                                                <form action="{{ route('barber.završi', $appointment->id) }}" method="post">
+                                                                    @csrf
+                                                                    @method('PATCH')
+                                                                    <button type="submit" class="btn btn-success btn-xs">
+                                                                        <i class="fas fa-check"></i>
+                                                                        Završi
+                                                                    </button>
+                                                                </form>
+                                                                <form action="{{ route('barber.otkaži', $appointment->id) }}" method="post">
+                                                                    @csrf
+                                                                    @method('PATCH')
+                                                                    <button type="submit" class="btn btn-error btn-xs">
+                                                                        <i class="fas fa-check"></i>
+                                                                        Otkaži
+                                                                    </button>
+                                                                </form>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -349,6 +384,24 @@
                                                                 <i class="fas fa-cut mr-1"></i>
                                                                 {{ $appointment->service->name }} - {{ number_format($appointment->price, 0, ',', '.') }} din
                                                             </p>
+                                                            <div class="flex gap-2 pt-2">
+                                                                <form action="{{ route('barber.završi', $appointment->id) }}" method="post">
+                                                                    @csrf
+                                                                    @method('PATCH')
+                                                                    <button type="submit" class="btn btn-success btn-xs">
+                                                                        <i class="fas fa-check"></i>
+                                                                        Završi
+                                                                    </button>
+                                                                </form>
+                                                                <form action="{{ route('barber.otkaži', $appointment->id) }}" method="post">
+                                                                    @csrf
+                                                                    @method('PATCH')
+                                                                    <button type="submit" class="btn btn-error btn-xs">
+                                                                        <i class="fas fa-check"></i>
+                                                                        Otkaži
+                                                                    </button>
+                                                                </form>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -422,16 +475,10 @@
                                 Nedeljni Kalendar
                             </h3>
                             <div class="flex items-center gap-2">
-                                <button class="btn btn-outline btn-sm">
-                                    <i class="fas fa-chevron-left"></i>
-                                </button>
                                 <span class="text-sm font-semibold px-4">{{ now()->startOfWeek()->format('j')}}-{{ now()->endOfWeek()->format('j. F') }}</span>
-                                <button class="btn btn-outline btn-sm">
-                                    <i class="fas fa-chevron-right"></i>
-                                </button>
                                 <button class="btn btn-primary btn-sm ml-4">
                                     <i class="fas fa-calendar-day"></i>
-                                    Today
+                                    Ova Nedelja
                                 </button>
                             </div>
                         </div>
@@ -460,177 +507,186 @@
                                 </div>
                                 <!-- Calendar Days -->
                                 <div class="grid grid-cols-7 gap-px bg-gray-200 rounded-b-lg overflow-hidden">
-                                    <!-- Monday -->
                                     @foreach($weekDays as $days)
                                         <div class="calendar-day bg-white p-2">
                                             <div class="space-y-1">
+                                                @if ($days['day_name'] == 'nedelja')
+                                                    <div class="text-center text-gray-400">
+                                                        <i class="fas fa-ban text-2xl mb-2"></i>
+                                                        <div class="text-xs">Slobodan Dan</div>
+                                                    </div>
+                                                    @continue
+                                                @endif
                                                 @foreach($appointmentsForWeek as $appointment)
                                                     @if ($days['day_number'] == $appointment->start_time->format('j'))
-                                                        <div class="appointment-chip bg-success/20 text-success" onclick="document.getElementById('appointment_modal').showModal()">
+                                                        @php
+                                                            $isCanceled = $appointment->status == 'Otkazano';
+                                                            $isFinished = $appointment->status == 'Završeno';
+                                                            $isToday = $days['is_today'];
+                            
+                                                            // $bgClass = $isFinished ? 'bg-success/20 text-success' : 'bg-primary/20 text-primary';
+
+                                                            if($isFinished)
+                                                            {
+                                                                $bgClass = 'bg-success/20 text-success';
+                                                            }
+                                                            elseif($isCanceled)
+                                                            {
+                                                                $bgClass = 'bg-error/20 text-error';
+                                                            }
+                                                            else
+                                                            {
+                                                                $bgClass = 'bg-primary/20 text-primary';
+                                                            }
+
+                                                            
+                                                            if ($isToday) {
+                                                                
+                                                                if($isFinished)
+                                                                {
+                                                                    $bgClass = 'bg-success/30 text-success';
+                                                                }
+                                                                elseif($isCanceled)
+                                                                {
+                                                                    $bgClass = 'bg-error/30 text-error';
+                                                                }
+                                                                else
+                                                                {
+                                                                    $bgClass = 'bg-primary/30 text-primary';
+                                                                }
+                                                            }
+                                                        @endphp   
+                                                        <div class="appointment-chip {{ $bgClass }} p-1 rounded text-xs cursor-pointer" onclick="document.getElementById('appointment_{{ $appointment->id }}').showModal()">
                                                             <div class="font-semibold">{{ $appointment->start_time->format('H:i A') }}</div>
                                                             <div class="truncate">{{ $appointment->client->name }}</div>
                                                         </div>
                                                     @endif
+                                                        <!-- Appointment Details Modal -->
+                                                    <dialog id="appointment_{{ $appointment->id }}" class="modal">
+                                                        <div class="modal-box max-w-2xl">
+                                                            <form method="dialog">
+                                                                <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+                                                            </form>
+                                                            <h3 class="font-bold text-lg mb-4">
+                                                                <i class="fas fa-calendar-check text-primary"></i>
+                                                                Detalji Termina
+                                                            </h3>
+                                                            
+                                                            <div class="space-y-4">
+                                                                <!-- Client Info -->
+                                                                <div class="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
+                                                                    <div class="avatar">
+                                                                        <div class="w-16 rounded-full">
+                                                                            <img src="https://ui-avatars.com/api/?name=Mike+Johnson&background=0D8ABC&color=fff" alt="Client">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="flex-1">
+                                                                        <p class="font-bold text-lg">{{ $appointment->client->name }}</p>
+                                                                        <p class="text-sm text-gray-500">
+                                                                            <i class="fas fa-phone-alt mr-1"></i>
+                                                                            {{ $appointment->client->phone }}
+                                                                        </p>
+                                                                        <p class="text-sm text-gray-500">
+                                                                            <i class="fas fa-envelope mr-1"></i>
+                                                                            {{ $appointment->client->email }}
+                                                                        </p>
+                                                                    </div>
+                                                                    <div class="badge badge-primary badge-lg">Regularni Klijent</div>
+                                                                </div>
+
+                                                                <!-- Appointment Details -->
+                                                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                                    <div class="form-control">
+                                                                        <label class="label">
+                                                                            <span class="label-text font-semibold">
+                                                                                <i class="fas fa-cut mr-1"></i>
+                                                                                Usluga
+                                                                            </span>
+                                                                        </label>
+                                                                        <input type="text" value="{{ $appointment->service->name }}" class="input input-bordered" readonly>
+                                                                    </div>
+
+                                                                    <div class="form-control">
+                                                                        <label class="label">
+                                                                            <span class="label-text font-semibold">
+                                                                                <i class="fas fa-dollar-sign mr-1"></i>
+                                                                                Cena
+                                                                            </span>
+                                                                        </label>
+                                                                        <input type="text" value="{{ $appointment->price }}" class="input input-bordered" readonly>
+                                                                    </div>
+
+                                                                    <div class="form-control">
+                                                                        <label class="label">
+                                                                            <span class="label-text font-semibold">
+                                                                                <i class="far fa-clock mr-1"></i>
+                                                                                Vreme Početka
+                                                                            </span>
+                                                                        </label>
+                                                                        <input type="text" value="{{ $appointment->start_time->format('H:i A') }}" class="input input-bordered" readonly>
+                                                                    </div>
+
+                                                                    <div class="form-control">
+                                                                        <label class="label">
+                                                                            <span class="label-text font-semibold">
+                                                                                <i class="fas fa-hourglass-half mr-1"></i>
+                                                                                Trajanje
+                                                                            </span>
+                                                                        </label>
+                                                                        <input type="text" value="{{ \Carbon\Carbon::parse($upNextAppointment->start_time)->diff(\Carbon\Carbon::parse($upNextAppointment->end_time))->forHumans(['short' => true, 'parts' => 2]) }}" class="input input-bordered" readonly>
+                                                                    </div>
+                                                                </div>
+
+                                                                <!-- Notes -->
+                                                                <div class="form-control">
+                                                                    <label class="label">
+                                                                        <span class="label-text font-semibold">
+                                                                            <i class="fas fa-sticky-note mr-1"></i>
+                                                                            Napomene:
+                                                                        </span>
+                                                                    </label>
+                                                                    <textarea class="textarea textarea-bordered h-20" readonly>{{ $appointment->notes ?? 'Nema Napomena'  }}</textarea>
+                                                                </div>
+
+                                                                <!-- Quick Actions -->
+                                                                <div class="flex gap-2 pt-4">
+                                                                    <form class="flex-1" action="{{ route('barber.završi', $appointment->id) }}" method="post">
+                                                                        @csrf
+                                                                        @method('PATCH')
+                                                                        <button type="submit" class="btn btn-success w-full">
+                                                                            <i class="fas fa-check"></i>
+                                                                            Završi
+                                                                        </button>
+                                                                    </form>
+                                                                    <button class="btn btn-error flex-1" onclick="document.getElementById('appointment_{{ $appointment->id }}').close()">
+                                                                        <i class="fas fa-times"></i>
+                                                                        Nazad
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <form method="dialog" class="modal-backdrop">
+                                                            <button>Zatvori</button>
+                                                        </form>
+                                                    </dialog>
                                                 @endforeach
                                             </div>
                                         </div>
                                     @endforeach
-                                    
-                                    {{-- <!-- Monday -->
-                                    <div class="calendar-day bg-white p-2">
-                                        <div class="space-y-1">
-                                            <div class="appointment-chip bg-success/20 text-success" onclick="document.getElementById('appointment_modal').showModal()">
-                                                <div class="font-semibold">9:00 AM</div>
-                                                <div class="truncate">Sarah W.</div>
-                                            </div>
-                                            <div class="appointment-chip bg-primary/20 text-primary" onclick="document.getElementById('appointment_modal').showModal()">
-                                                <div class="font-semibold">11:00 AM</div>
-                                                <div class="truncate">John D.</div>
-                                            </div>
-                                            <div class="appointment-chip bg-info/20 text-info" onclick="document.getElementById('appointment_modal').showModal()">
-                                                <div class="font-semibold">2:00 PM</div>
-                                                <div class="truncate">Mike R.</div>
-                                            </div>
-                                            <div class="text-xs text-gray-500 text-center mt-2">+2 more</div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Tuesday -->
-                                    <div class="calendar-day bg-white p-2">
-                                        <div class="space-y-1">
-                                            <div class="appointment-chip bg-success/20 text-success" onclick="document.getElementById('appointment_modal').showModal()">
-                                                <div class="font-semibold">10:00 AM</div>
-                                                <div class="truncate">Emma L.</div>
-                                            </div>
-                                            <div class="appointment-chip bg-primary/20 text-primary" onclick="document.getElementById('appointment_modal').showModal()">
-                                                <div class="font-semibold">1:00 PM</div>
-                                                <div class="truncate">Chris P.</div>
-                                            </div>
-                                            <div class="appointment-chip bg-warning/20 text-warning" onclick="document.getElementById('appointment_modal').showModal()">
-                                                <div class="font-semibold">3:30 PM</div>
-                                                <div class="truncate">Alex K.</div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Wednesday -->
-                                    <div class="calendar-day bg-white p-2">
-                                        <div class="space-y-1">
-                                            <div class="appointment-chip bg-success/20 text-success" onclick="document.getElementById('appointment_modal').showModal()">
-                                                <div class="font-semibold">9:30 AM</div>
-                                                <div class="truncate">David M.</div>
-                                            </div>
-                                            <div class="appointment-chip bg-info/20 text-info" onclick="document.getElementById('appointment_modal').showModal()">
-                                                <div class="font-semibold">12:00 PM</div>
-                                                <div class="truncate">Tom S.</div>
-                                            </div>
-                                            <div class="appointment-chip bg-primary/20 text-primary" onclick="document.getElementById('appointment_modal').showModal()">
-                                                <div class="font-semibold">4:00 PM</div>
-                                                <div class="truncate">Lisa B.</div>
-                                            </div>
-                                            <div class="text-xs text-gray-500 text-center mt-2">+1 more</div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Thursday -->
-                                    <div class="calendar-day bg-white p-2">
-                                        <div class="space-y-1">
-                                            <div class="appointment-chip bg-success/20 text-success" onclick="document.getElementById('appointment_modal').showModal()">
-                                                <div class="font-semibold">8:00 AM</div>
-                                                <div class="truncate">Mark H.</div>
-                                            </div>
-                                            <div class="appointment-chip bg-primary/20 text-primary" onclick="document.getElementById('appointment_modal').showModal()">
-                                                <div class="font-semibold">10:30 AM</div>
-                                                <div class="truncate">Nina F.</div>
-                                            </div>
-                                            <div class="appointment-chip bg-warning/20 text-warning" onclick="document.getElementById('appointment_modal').showModal()">
-                                                <div class="font-semibold">2:30 PM</div>
-                                                <div class="truncate">Paul G.</div>
-                                            </div>
-                                            <div class="appointment-chip bg-info/20 text-info" onclick="document.getElementById('appointment_modal').showModal()">
-                                                <div class="font-semibold">5:00 PM</div>
-                                                <div class="truncate">Rachel V.</div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Friday (Today) -->
-                                    <div class="calendar-day bg-primary/5 p-2 border-2 border-primary">
-                                        <div class="space-y-1">
-                                            <div class="appointment-chip bg-success/30 text-success border border-success" onclick="document.getElementById('appointment_modal').showModal()">
-                                                <div class="font-semibold">9:00 AM</div>
-                                                <div class="truncate">Sarah W.</div>
-                                            </div>
-                                            <div class="appointment-chip bg-success/30 text-success border border-success" onclick="document.getElementById('appointment_modal').showModal()">
-                                                <div class="font-semibold">10:00 AM</div>
-                                                <div class="truncate">Robert C.</div>
-                                            </div>
-                                            <div class="appointment-chip bg-warning/30 text-warning border border-warning" onclick="document.getElementById('appointment_modal').showModal()">
-                                                <div class="font-semibold">11:30 AM</div>
-                                                <div class="truncate">David M.</div>
-                                            </div>
-                                            <div class="appointment-chip bg-primary/30 text-primary border-2 border-primary" onclick="document.getElementById('appointment_modal').showModal()">
-                                                <div class="font-semibold">2:00 PM</div>
-                                                <div class="truncate">Mike J.</div>
-                                            </div>
-                                            <div class="text-xs text-primary font-semibold text-center mt-2">+4 more</div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Saturday -->
-                                    <div class="calendar-day bg-white p-2">
-                                        <div class="space-y-1">
-                                            <div class="appointment-chip bg-gray-200 text-gray-600" onclick="document.getElementById('appointment_modal').showModal()">
-                                                <div class="font-semibold">9:00 AM</div>
-                                                <div class="truncate">Steve J.</div>
-                                            </div>
-                                            <div class="appointment-chip bg-gray-200 text-gray-600" onclick="document.getElementById('appointment_modal').showModal()">
-                                                <div class="font-semibold">11:00 AM</div>
-                                                <div class="truncate">Karen M.</div>
-                                            </div>
-                                            <div class="appointment-chip bg-gray-200 text-gray-600" onclick="document.getElementById('appointment_modal').showModal()">
-                                                <div class="font-semibold">1:00 PM</div>
-                                                <div class="truncate">Ben T.</div>
-                                            </div>
-                                            <div class="appointment-chip bg-gray-200 text-gray-600" onclick="document.getElementById('appointment_modal').showModal()">
-                                                <div class="font-semibold">3:00 PM</div>
-                                                <div class="truncate">Amy W.</div>
-                                            </div>
-                                            <div class="text-xs text-gray-500 text-center mt-2">+3 more</div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Sunday -->
-                                    <div class="calendar-day bg-gray-50 p-2">
-                                        <div class="flex items-center justify-center h-full">
-                                            <div class="text-center text-gray-400">
-                                                <i class="fas fa-ban text-2xl mb-2"></i>
-                                                <div class="text-xs">Day Off</div>
-                                            </div>
-                                        </div>
-                                    </div> --}}
                                 </div>
                             </div>
                         </div>
 
                         <!-- Calendar Legend -->
                         <div class="flex flex-wrap items-center gap-4 mt-6 pt-4 border-t border-gray-200">
-                            <div class="text-sm font-semibold text-gray-600">Legend:</div>
+                            <div class="text-sm font-semibold text-gray-600">Legenda:</div>
                             <div class="flex items-center gap-2 text-sm">
                                 <div class="w-4 h-4 rounded bg-success/20 border border-success"></div>
-                                <span>Completed</span>
-                            </div>
-                            <div class="flex items-center gap-2 text-sm">
-                                <div class="w-4 h-4 rounded bg-warning/20 border border-warning"></div>
-                                <span>In Progress</span>
+                                <span>Završeno</span>
                             </div>
                             <div class="flex items-center gap-2 text-sm">
                                 <div class="w-4 h-4 rounded bg-primary/20 border border-primary"></div>
-                                <span>Next Up</span>
-                            </div>
-                            <div class="flex items-center gap-2 text-sm">
-                                <div class="w-4 h-4 rounded bg-gray-200"></div>
-                                <span>Scheduled</span>
+                                <span>Sledeće / Potvrđeno</span>
                             </div>
                         </div>
                     </div>
@@ -638,116 +694,6 @@
             </main>
         </div>
     </div>
-
-    <!-- Appointment Details Modal -->
-    <dialog id="appointment_modal" class="modal">
-        <div class="modal-box max-w-2xl">
-            <form method="dialog">
-                <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
-            </form>
-            <h3 class="font-bold text-lg mb-4">
-                <i class="fas fa-calendar-check text-primary"></i>
-                Appointment Details
-            </h3>
-            
-            <div class="space-y-4">
-                <!-- Client Info -->
-                <div class="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
-                    <div class="avatar">
-                        <div class="w-16 rounded-full">
-                            <img src="https://ui-avatars.com/api/?name=Mike+Johnson&background=0D8ABC&color=fff" alt="Client">
-                        </div>
-                    </div>
-                    <div class="flex-1">
-                        <p class="font-bold text-lg">Mike Johnson</p>
-                        <p class="text-sm text-gray-500">
-                            <i class="fas fa-phone-alt mr-1"></i>
-                            (555) 123-4567
-                        </p>
-                        <p class="text-sm text-gray-500">
-                            <i class="fas fa-envelope mr-1"></i>
-                            mike.johnson@email.com
-                        </p>
-                    </div>
-                    <div class="badge badge-primary badge-lg">Regular Client</div>
-                </div>
-
-                <!-- Appointment Details -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="form-control">
-                        <label class="label">
-                            <span class="label-text font-semibold">
-                                <i class="fas fa-cut mr-1"></i>
-                                Service
-                            </span>
-                        </label>
-                        <input type="text" value="Haircut & Beard Trim" class="input input-bordered" readonly>
-                    </div>
-
-                    <div class="form-control">
-                        <label class="label">
-                            <span class="label-text font-semibold">
-                                <i class="fas fa-dollar-sign mr-1"></i>
-                                Price
-                            </span>
-                        </label>
-                        <input type="text" value="$45.00" class="input input-bordered" readonly>
-                    </div>
-
-                    <div class="form-control">
-                        <label class="label">
-                            <span class="label-text font-semibold">
-                                <i class="far fa-clock mr-1"></i>
-                                Start Time
-                            </span>
-                        </label>
-                        <input type="text" value="2:00 PM" class="input input-bordered" readonly>
-                    </div>
-
-                    <div class="form-control">
-                        <label class="label">
-                            <span class="label-text font-semibold">
-                                <i class="fas fa-hourglass-half mr-1"></i>
-                                Duration
-                            </span>
-                        </label>
-                        <input type="text" value="45 minutes" class="input input-bordered" readonly>
-                    </div>
-                </div>
-
-                <!-- Notes -->
-                <div class="form-control">
-                    <label class="label">
-                        <span class="label-text font-semibold">
-                            <i class="fas fa-sticky-note mr-1"></i>
-                            Notes
-                        </span>
-                    </label>
-                    <textarea class="textarea textarea-bordered h-20" readonly>Client prefers short on sides, longer on top. Last visit was 6 weeks ago.</textarea>
-                </div>
-
-                <!-- Quick Actions -->
-                <div class="flex flex-wrap gap-2 pt-4">
-                    <button class="btn btn-success flex-1">
-                        <i class="fas fa-check"></i>
-                        Mark Complete
-                    </button>
-                    <button class="btn btn-warning flex-1">
-                        <i class="fas fa-clock"></i>
-                        Reschedule
-                    </button>
-                    <button class="btn btn-error flex-1">
-                        <i class="fas fa-times"></i>
-                        Cancel
-                    </button>
-                </div>
-            </div>
-        </div>
-        <form method="dialog" class="modal-backdrop">
-            <button>close</button>
-        </form>
-    </dialog>
-
 </body>
     <script>
         // Auto-refresh current time

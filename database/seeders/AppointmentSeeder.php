@@ -210,5 +210,108 @@ class AppointmentSeeder extends Seeder
         $appointment->notes = null;
         $appointment->price = 2000;
         $appointment->save();
+
+        $appointment = new Appointment();
+        $appointment->barber_id = 1;
+        $appointment->client_id = 1;
+        $appointment->service_id = 2;
+        $appointment->start_time = '2026-4-27 10:00:00';
+        $appointment->end_time = '2026-4-27 10:30:00';
+        $appointment->status = 'Završeno';
+        $appointment->notes = null;
+        $appointment->price = 2000;
+        $appointment->save();
+
+        $appointment = new Appointment();
+        $appointment->barber_id = 1;
+        $appointment->client_id = 2;
+        $appointment->service_id = 5;
+        $appointment->start_time = '2026-4-27 11:00:00';
+        $appointment->end_time = '2026-4-27 11:30:00';
+        $appointment->status = 'Potvrđeno';
+        $appointment->notes = null;
+        $appointment->price = 1000;
+        $appointment->save();
+
+        $appointment = new Appointment();
+        $appointment->barber_id = 1;
+        $appointment->client_id = 1;
+        $appointment->service_id = 3;
+        $appointment->start_time = '2026-4-27 16:00:00';
+        $appointment->end_time = '2026-4-27 17:30:00';
+        $appointment->status = 'Potvrđeno';
+        $appointment->notes = null;
+        $appointment->price = 3000;
+        $appointment->save();
+
+        $appointment = new Appointment();
+        $appointment->barber_id = 1;
+        $appointment->client_id = 3;
+        $appointment->service_id = 2;
+        $appointment->start_time = '2026-4-28 9:00:00';
+        $appointment->end_time = '2026-4-28 10:00:00';
+        $appointment->status = 'Potvrđeno';
+        $appointment->notes = null;
+        $appointment->price = 1500;
+        $appointment->save();
+
+        $appointment = new Appointment();
+        $appointment->barber_id = 1;
+        $appointment->client_id = 2;
+        $appointment->service_id = 2;
+        $appointment->start_time = '2026-4-29 9:00:00';
+        $appointment->end_time = '2026-4-29 10:00:00';
+        $appointment->status = 'Potvrđeno';
+        $appointment->notes = null;
+        $appointment->price = 1300;
+        $appointment->save();
+
+
+        $appointment = new Appointment();
+        $appointment->barber_id = 1;
+        $appointment->client_id = 2;
+        $appointment->service_id = 8;
+        $appointment->start_time = '2026-4-29 14:00:00';
+        $appointment->end_time = '2026-4-29 14:30:00';
+        $appointment->status = 'Potvrđeno';
+        $appointment->notes = null;
+        $appointment->price = 2500;
+        $appointment->save();
+
+        $appointment = new Appointment();
+        $appointment->barber_id = 1;
+        $appointment->client_id = 2;
+        $appointment->service_id = 8;
+        $appointment->start_time = '2026-4-30 10:00:00';
+        $appointment->end_time = '2026-4-30 11:30:00';
+        $appointment->status = 'Potvrđeno';
+        $appointment->notes = null;
+        $appointment->price = 2500;
+        $appointment->save();
+
+        $appointment = new Appointment();
+        $appointment->barber_id = 1;
+        $appointment->client_id = 4;
+        $appointment->service_id = 8;
+        $appointment->start_time = '2026-5-1 10:00:00';
+        $appointment->end_time = '2026-5-1 11:30:00';
+        $appointment->status = 'Potvrđeno';
+        $appointment->notes = null;
+        $appointment->price = 2500;
+        $appointment->save();
+
+        $appointment = new Appointment();
+        $appointment->barber_id = 1;
+        $appointment->client_id = 2;
+        $appointment->service_id = 3;
+        $appointment->start_time = '2026-4-27 18:00:00';
+        $appointment->end_time = '2026-4-27 18:30:00';
+        $appointment->status = 'Potvrđeno';
+        $appointment->notes = null;
+        $appointment->price = 3000;
+        $appointment->save();
+
+
+
     }
 }

@@ -7,6 +7,7 @@ use App\Models\Appointment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Barber;
+use Illuminate\Support\Facades\App;
 
 class DashboardController extends Controller
 {
@@ -104,5 +105,14 @@ class DashboardController extends Controller
 
         return redirect()->back()->with('success', 'Uspešno završen termin!');
 
+    }
+
+    public function cancel($id)
+    {
+        $appointment = Appointment::findOrFail($id);
+        $appointment->status = 'Otkazano';
+        $appointment->save();
+
+        return redirect()->back()->with('success', 'Uspešno otkazan termin');
     }
 }
