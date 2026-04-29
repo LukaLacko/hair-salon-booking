@@ -9,6 +9,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Barber\DashboardController as BarberDashboardController;
+use App\Http\Controllers\Barber\ScheduleController as BarberScheduleController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -49,6 +50,8 @@ Route::middleware(['auth', 'barber'])->prefix('barber')->name('barber.')->group(
     Route::get('/dashboard', [BarberDashboardController::class, 'index'])->name('dashboard');
     Route::patch('/dashboard/završi/{id}', [BarberDashboardController::class, 'complete'])->name('završi');
     Route::patch('/dashboard/otkaži/{id}', [BarberDashboardController::class, 'cancel'])->name('otkaži');
+
+    Route::get('/raspored', [BarberScheduleController::class, 'index'])->name('raspored');
 });
 
 

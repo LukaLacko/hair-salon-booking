@@ -237,8 +237,8 @@ class AppointmentSeeder extends Seeder
         $appointment->barber_id = 1;
         $appointment->client_id = 1;
         $appointment->service_id = 3;
-        $appointment->start_time = '2026-4-27 16:00:00';
-        $appointment->end_time = '2026-4-27 17:30:00';
+        $appointment->start_time = '2026-4-27 17:00:00';
+        $appointment->end_time = '2026-4-27 18:30:00';
         $appointment->status = 'Potvrđeno';
         $appointment->notes = null;
         $appointment->price = 3000;
