@@ -9,7 +9,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Barber;
 use App\Models\Appointment;
-
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ScheduleExport;
 
 class ScheduleController extends Controller
 {
@@ -83,10 +84,36 @@ class ScheduleController extends Controller
                 'is_today' => $date->isToday(),
             ];
         }
-
-
-
-
         return view('barber.schedule', compact('barber', 'schedules', 'workingDaysCount', 'notWorkingDays', 'weeklyHours', 'totalMinutes' ,'longestHours', 'appointmentsForWeek', 'revenueForWeek', 'weekDays'));
+    }
+
+    public function export()
+    {
+        $barber = Barber::where('user_id', Auth::id())->first();
+    
+        $workingHours = WorkingHour::where('barber_id', $barber->id)
+            ->get()->keyBy('day_of_the_week');
+    
+        $appointmentsForWeek = Appointment::where('barber_id', $barber->id)
+            ->whereBetween('start_time', [now()->startOfWeek(), now()->endOfWeek()])
+            ->get()
+            ->groupBy(fn($app) => $app->start_time->format('j'));
+    
+        $startOfWeek = now()->startOfWeek();
+        $weekDays = [];
+        for ($i = 0; $i < 7; $i++) {
+            $date = $startOfWeek->copy()->addDays($i);
+            $weekDays[] = [
+                'day_name'    => $date->locale('sr')->translatedFormat('l'),
+                'day_number'  => $date->format('j'),
+                'day_of_week' => $date->dayOfWeek,
+                'is_today'    => $date->isToday(),
+            ];
+        }
+    
+        return Excel::download(
+            new ScheduleExport($weekDays, $appointmentsForWeek, $workingHours),
+            'raspored-' . now()->format('Y-m') . '.xlsx'
+        );
     }
 }

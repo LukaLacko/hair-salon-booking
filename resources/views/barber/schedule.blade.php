@@ -308,10 +308,10 @@
                                 Detaljan pregled
                             </h3>
                             <div class="flex items-center gap-2">
-                                <button class="btn btn-outline btn-sm">
-                                    <i class="fas fa-download"></i>
-                                    Export
-                                </button>
+                                    <a href="{{ route('barber.schedule.export') }}" class="btn btn-outline btn-sm">
+                                        <i class="fas fa-download"></i>
+                                        Export
+                                    </a>
                                 <button class="btn btn-outline btn-sm">
                                     <i class="fas fa-print"></i>
                                     Print

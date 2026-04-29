@@ -52,6 +52,8 @@ Route::middleware(['auth', 'barber'])->prefix('barber')->name('barber.')->group(
     Route::patch('/dashboard/otkaži/{id}', [BarberDashboardController::class, 'cancel'])->name('otkaži');
 
     Route::get('/raspored', [BarberScheduleController::class, 'index'])->name('raspored');
+
+    Route::get('/raspored/export', [BarberScheduleController::class, 'export'])->name('schedule.export');
 });
 
 
