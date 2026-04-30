@@ -38,6 +38,8 @@ class ScheduleController extends Controller
         $longestDayMinutes = 0;
         foreach($schedules as $day)
         {
+            if($day->is_day_off) continue;
+
             $start = Carbon::parse($day->start_time);
             $end = Carbon::parse($day->end_time);
 
@@ -62,6 +64,16 @@ class ScheduleController extends Controller
             ->groupBy(function($app){
                 return $app->start_time->format('j');
             });
+        
+        $totalAppointmentsMinutes = $appointmentsForWeek->flatten()->sum(function($app){
+            return Carbon::parse($app->start_time)->diffInMinutes(Carbon::parse($app->end_time));
+        });
+
+        $activeWorkTimePercentage = 0;
+        if($weeklyHours > 0)
+        {
+            $activeWorkTimePercentage = round(($totalAppointmentsMinutes / $totalMinutes) * 100);
+        }
 
         $revenueForWeek = Appointment::where('barber_id', $barberId)
             ->whereBetween('start_time', [
@@ -96,7 +108,7 @@ class ScheduleController extends Controller
                 'date' => $date,
             ];
         }
-        return view('barber.schedule', compact('barber', 'schedules', 'workingDaysCount', 'notWorkingDays', 'weeklyHours', 'totalMinutes' ,'longestHours', 'appointmentsForWeek', 'revenueForWeek', 'weekDays'));
+        return view('barber.schedule', compact('barber', 'schedules', 'workingDaysCount', 'notWorkingDays', 'weeklyHours', 'totalMinutes' ,'longestHours', 'appointmentsForWeek', 'revenueForWeek', 'weekDays', 'activeWorkTimePercentage'));
     }
 
     public function export()
@@ -131,8 +143,6 @@ class ScheduleController extends Controller
 
     public function updateAll(Request $request)
     {
-
-
         foreach($request->days as $id => $data)
         {
 

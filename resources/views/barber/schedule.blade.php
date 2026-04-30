@@ -202,10 +202,10 @@
 
                                     <div class="bg-white/10 rounded-lg p-3 backdrop-blur">
                                         <div class="flex items-center justify-between mb-2">
-                                            <span class="text-sm opacity-90">Iskorišćenost</span>
-                                            <span class="font-bold text-lg">89%</span>
+                                            <span class="text-sm opacity-90">Aktivno Radno Vreme</span>
+                                            <span class="font-bold text-lg">{{ $activeWorkTimePercentage }}%</span>
                                         </div>
-                                        <progress class="progress progress-success bg-white/20" value="89" max="100"></progress>
+                                        <progress class="progress progress-success bg-white/20" value="{{ $activeWorkTimePercentage }}" max="100"></progress>
                                     </div>
 
                                     <div class="divider my-2"></div>
