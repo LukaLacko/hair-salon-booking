@@ -570,6 +570,7 @@
     </dialog>
 
     <!-- Edit Single Day Modal -->
+    @foreach($weekDays as $days)
     <dialog id="edit_day_{{ $days['wh_id'] }}" class="modal">
         <div class="modal-box">
             <form method="dialog">
@@ -580,18 +581,20 @@
                 Izmeni radni dan
             </h3>
 
-            <form class="space-y-4">
+            <form class="space-y-4" action="{{ route('barber.izmeni', $days['wh_id']) }}" method="post">
+                @csrf
+                @method('PUT')
                 <div class="form-control">
                     <label class="label">
                         <span class="label-text font-semibold">Dan</span>
                     </label>
-                    <input type="text" class="input input-bordered" value="Ponedeljak" readonly>
+                    <input type="text" class="input input-bordered capitalize" value="{{ $days['day_name'] }}" readonly>
                 </div>
 
                 <div class="form-control">
                     <label class="label cursor-pointer">
                         <span class="label-text font-semibold">Radni dan</span>
-                        <input type="checkbox" class="toggle toggle-success" checked />
+                        <input type="checkbox" name="is_day_off" class="toggle toggle-error" {{ $days['is_day_off'] ? 'checked' : '' }} />
                     </label>
                 </div>
 
@@ -600,22 +603,15 @@
                         <label class="label">
                             <span class="label-text font-semibold">Početak</span>
                         </label>
-                        <input type="time" class="input input-bordered" value="09:00">
+                        <input type="time" name="start_time" class="input input-bordered" value="{{ $days['start_time'] }}">
                     </div>
 
                     <div class="form-control">
                         <label class="label">
                             <span class="label-text font-semibold">Kraj</span>
                         </label>
-                        <input type="time" class="input input-bordered" value="17:00">
+                        <input type="time" name="end_time" class="input input-bordered" value="{{ $days['end_time'] }}">
                     </div>
-                </div>
-
-                <div class="form-control">
-                    <label class="label">
-                        <span class="label-text font-semibold">Napomena</span>
-                    </label>
-                    <textarea class="textarea textarea-bordered" placeholder="Dodatne napomene za ovaj dan..."></textarea>
                 </div>
 
                 <div class="flex justify-end gap-2 pt-4">
@@ -633,5 +629,6 @@
             <button>close</button>
         </form>
     </dialog>
+    @endforeach
 </body>
 </x-app-layout>

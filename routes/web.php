@@ -53,6 +53,7 @@ Route::middleware(['auth', 'barber'])->prefix('barber')->name('barber.')->group(
 
     Route::get('/raspored', [BarberScheduleController::class, 'index'])->name('raspored');
     Route::put('/raspored/izmeni-sve', [BarberScheduleController::class, 'updateAll'])->name('izmeni-sve');
+    Route::put('/raspored/izmeni/{id}', [BarberScheduleController::class, 'update'])->name('izmeni');
 
     Route::get('/raspored/export', [BarberScheduleController::class, 'export'])->name('schedule.export');
 });

@@ -155,4 +155,20 @@ class ScheduleController extends Controller
         
         return redirect()->back()->with('success', 'Upsešno izmenjen raspored!');
     }
+
+    public function update(Request $request, $id)
+    {
+        if(empty($request->start_time) or empty($request->end_time))
+        {
+            return redirect()->back()->with('error', 'Sva polja moraju biti popunjena!');
+        }
+
+        $workingHour = WorkingHour::findOrFail($id);
+        $workingHour->is_day_off = $request->has('is_day_off');
+        $workingHour->start_time = $request->start_time;
+        $workingHour->end_time = $request->end_time;
+        $workingHour->save();
+
+        return redirect()->back()->with('success', 'Upsešno izmenjen dan!');
+    }
 }
