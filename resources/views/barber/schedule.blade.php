@@ -251,13 +251,8 @@
                                     @foreach ($weekDays as $days)
                                         @php
                                             $dailyApps = $appointmentsForWeek->get($days['day_number'], collect());
-                                            $wh = $schedules->get($days['day_of_week']);
-                                            $isDayOff = $wh->is_day_off;
-                                            $startTime = \Carbon\Carbon::parse($wh->start_time)->format('H:i');
-                                            $endTime   = \Carbon\Carbon::parse($wh->end_time)->format('H:i');
-    
                                         @endphp
-                                            @if ($days['is_today'] && !$isDayOff)
+                                            @if ($days['is_today'] && !$days['is_day_off'])
                                                 <div class="schedule-card flex items-center gap-4 p-4 border-2 border-primary rounded-lg bg-primary/5">
                                                     <div class="flex items-center gap-3 w-32">
                                                         <div class="day-indicator bg-warning animate-pulse"></div>
@@ -269,20 +264,20 @@
                                                     <div class="flex-1 flex items-center gap-6">
                                                         <div class="flex items-center gap-2">
                                                             <i class="fas fa-sign-in-alt text-success"></i>
-                                                            <span class="font-mono font-bold">{{ $startTime }}</span>
+                                                            <span class="font-mono font-bold">{{ $days['start_time'] }}</span>
                                                         </div>
                                                         <div class="flex-1 border-t-2 border-dashed border-primary"></div>
                                                         <div class="flex items-center gap-2">
                                                             <i class="fas fa-sign-out-alt text-error"></i>
-                                                            <span class="font-mono font-bold">{{ $endTime }}</span>
+                                                            <span class="font-mono font-bold">{{ $days['end_time'] }}</span>
                                                         </div>
                                                     </div>
                                                     <div class="text-right min-w-[80px]">
-                                                        <p class="font-bold text-primary">8h</p>
+                                                        <p class="font-bold text-primary">{{ $days['duration'] }}</p>
                                                         <p class="text-xs text-gray-500">{{ $dailyApps->count() }} termina</p>
                                                     </div>
                                                 </div>
-                                            @elseif ($isDayOff)
+                                            @elseif ($days['is_day_off'])
                                                 <div class="schedule-card flex items-center gap-4 p-4 border border-error/30 rounded-lg bg-error/5">
                                                     <div class="flex items-center gap-3 w-32">
                                                         <div class="day-indicator bg-error"></div>
@@ -312,16 +307,16 @@
                                                     <div class="flex-1 flex items-center gap-6">
                                                         <div class="flex items-center gap-2">
                                                             <i class="fas fa-sign-in-alt text-success"></i>
-                                                            <span class="font-mono font-bold">{{ $startTime }}</span>
+                                                            <span class="font-mono font-bold">{{ $days['start_time'] }}</span>
                                                         </div>
                                                         <div class="flex-1 border-t-2 border-dashed border-gray-300"></div>
                                                         <div class="flex items-center gap-2">
                                                             <i class="fas fa-sign-out-alt text-error"></i>
-                                                            <span class="font-mono font-bold">{{ $endTime}}</span>
+                                                            <span class="font-mono font-bold">{{ $days['end_time']}}</span>
                                                         </div>
                                                     </div>
                                                     <div class="text-right min-w-[80px]">
-                                                        <p class="font-bold text-primary">8h</p>
+                                                        <p class="font-bold text-primary">{{ $days['duration'] }}</p>
                                                         <p class="text-xs text-gray-500">{{ $dailyApps->count() }} termina</p>
                                                     </div>
                                                 </div>
@@ -372,28 +367,22 @@
                                     @foreach ($weekDays as $days )
                                     @php
                                         $dailyApps = $appointmentsForWeek->get($days['day_number'], collect());
-                                        $wh = $schedules->get($days['day_of_week']);
-                                        $isDayOff = $wh->is_day_off;
-                                        $startTime = \Carbon\Carbon::parse($wh->start_time)->format('H:i');
-                                        $endTime   = \Carbon\Carbon::parse($wh->end_time)->format('H:i');
-                                        $duration = \Carbon\Carbon::parse($wh->start_time)->diff(\Carbon\Carbon::parse($wh->end_time))->forHumans(['short' => true, 'parts' => 2]);
-
                                     @endphp
-                                    @if ($days['is_today'] && !$isDayOff)
+                                    @if ($days['is_today'] && !$days['is_day_off'])
                                         <tr class="bg-primary/5">
                                             <td>
                                                 <div class="flex items-center gap-2">
                                                     <div class="day-indicator bg-warning animate-pulse"></div>
                                                     <div>
                                                         <div class="font-bold capitalize">{{ $days['day_name'] }}</div>
-                                                        <div class="text-sm text-primary font-semibold">Apr 25 • Danas</div>
+                                                        <div class="text-sm text-primary font-semibold">{{ $days['date']->format('M d') }} • Danas</div>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td><span class="badge badge-warning badge-sm">U toku</span></td>
-                                            <td class="font-mono">{{ $startTime }}</td>
-                                            <td class="font-mono">{{ $endTime }}</td>
-                                            <td class="font-bold">{{ $duration }}</td>
+                                            <td class="font-mono">{{ $days['start_time'] }}</td>
+                                            <td class="font-mono">{{ $days['end_time'] }}</td>
+                                            <td class="font-bold">{{ $days['duration'] }}</td>
                                             <td>1h</td>
                                             <td class="font-bold text-primary">7h</td>
                                             <td>
@@ -405,14 +394,14 @@
                                                 </button>
                                             </td>
                                         </tr>
-                                    @elseif($isDayOff)
+                                    @elseif($days['is_day_off'])
                                         <tr class="bg-error/5">
                                             <td>
                                                 <div class="flex items-center gap-2">
                                                     <div class="day-indicator bg-error"></div>
                                                     <div>
                                                         <div class="font-bold capitalize">{{ $days['day_name'] }}</div>
-                                                        <div class="text-sm opacity-50">Apr 27</div>
+                                                        <div class="text-sm opacity-50">{{ $days['date']->format('M d') }}</div>
                                                     </div>
                                                 </div>
                                             </td>
@@ -426,7 +415,7 @@
                                                 <div class="badge badge-ghost">-</div>
                                             </td>
                                             <td>
-                                                <button class="btn btn-ghost btn-xs" onclick="document.getElementById('edit_day_{{ $wh->id }}').showModal()">
+                                                <button class="btn btn-ghost btn-xs" onclick="document.getElementById('edit_day_{{ $days['wh_id'] }}').showModal()">
                                                     <i class="fas fa-edit"></i>
                                                 </button>
                                             </td>
@@ -438,21 +427,21 @@
                                                     <div class="day-indicator bg-success"></div>
                                                     <div>
                                                         <div class="font-bold capitalize">{{ $days['day_name'] }}</div>
-                                                        <div class="text-sm opacity-50">Apr 21</div>
+                                                        <div class="text-sm opacity-50">{{ $days['date']->format('M d') }}</div>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td><span class="badge badge-success badge-sm">Radan</span></td>
-                                            <td class="font-mono">{{ $startTime }}</td>
-                                            <td class="font-mono">{{ $endTime }}</td>
-                                            <td class="font-bold">{{ $duration}}</td>
+                                            <td class="font-mono">{{ $days['start_time'] }}</td>
+                                            <td class="font-mono">{{ $days['end_time'] }}</td>
+                                            <td class="font-bold">{{ $days['duration']}}</td>
                                             <td>1h</td>
                                             <td class="font-bold text-primary">7h</td>
                                             <td>
                                                 <div class="badge badge-info">{{ $dailyApps->count() }} termina</div>
                                             </td>
                                             <td>
-                                                <button class="btn btn-ghost btn-xs" onclick="document.getElementById('edit_day_{{ $wh->id }}').showModal()">
+                                                <button class="btn btn-ghost btn-xs" onclick="document.getElementById('edit_day_{{ $days['wh_id'] }}').showModal()">
                                                     <i class="fas fa-edit"></i>
                                                 </button>
                                             </td>
@@ -505,18 +494,11 @@
                 <!-- Days Grid -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     @foreach($weekDays as $days)
-                        @php
-                            $wh = $schedules->get($days['day_of_week']);
-                            $isDayOff = $wh->is_day_off;
-                            $startTime = \Carbon\Carbon::parse($wh->start_time)->format('H:i');
-                            $endTime   = \Carbon\Carbon::parse($wh->end_time)->format('H:i');
-                            $duration = \Carbon\Carbon::parse($wh->start_time)->diff(\Carbon\Carbon::parse($wh->end_time))->forHumans(['short' => true, 'parts' => 2]);
-                        @endphp
-                        @if ($isDayOff)
+                        @if ($days['is_day_off'])
                             <div class="border border-error/30 rounded-lg p-4 bg-error/5">
                                 <div class="flex items-center justify-between mb-3">
                                     <label class="label cursor-pointer gap-2">
-                                        <input type="checkbox" name="days[{{ $wh->id }}][is_day_off]" class="toggle toggle-error" {{ $wh->is_day_off ? 'checked' : '' }} />
+                                        <input type="checkbox" name="days[{{ $days['wh_id'] }}][is_day_off]" class="toggle toggle-error" {{ $days['is_day_off'] ? 'checked' : '' }} />
                                         <span class="label-text font-bold capitalize">{{ $days['day_name'] }}</span>
                                     </label>
                                 </div>
@@ -525,13 +507,13 @@
                                         <label class="label">
                                             <span class="label-text text-xs">Početak</span>
                                         </label>
-                                        <input type="time" name="days[{{ $wh->id }}][start_time]" class="input input-bordered input-sm" value="">
+                                        <input type="time" name="days[{{ $days['wh_id'] }}][start_time]" class="input input-bordered input-sm" value="">
                                     </div>
                                     <div class="form-control">
                                         <label class="label">
                                             <span class="label-text text-xs">Kraj</span>
                                         </label>
-                                        <input type="time" name="days[{{ $wh->id }}][end_time]" class="input input-bordered input-sm" value="">
+                                        <input type="time" name="days[{{ $days['wh_id'] }}][end_time]" class="input input-bordered input-sm" value="">
                                     </div>
                                 </div>
                             </div>
@@ -539,7 +521,7 @@
                             <div class="border border-gray-200 rounded-lg p-4">
                                 <div class="flex items-center justify-between mb-3">
                                     <label class="label cursor-pointer gap-2">
-                                        <input type="checkbox" name="days[{{ $wh->id }}][is_day_off]" class="toggle toggle-error" {{ $wh->is_day_off ? 'checked' : '' }} />
+                                        <input type="checkbox" name="days[{{ $days['wh_id']}}][is_day_off]" class="toggle toggle-error" {{ $days['is_day_off'] ? 'checked' : '' }} />
                                         <span class="label-text font-bol capitalize">{{ $days['day_name'] }}</span>
                                     </label>
                                 </div>
@@ -548,13 +530,13 @@
                                         <label class="label">
                                             <span class="label-text text-xs">Početak</span>
                                         </label>
-                                        <input type="time" name="days[{{ $wh->id }}][start_time]" class="input input-bordered input-sm" value="{{ $startTime }}">
+                                        <input type="time" name="days[{{ $days['wh_id'] }}][start_time]" class="input input-bordered input-sm" value="{{ $days['start_time'] }}">
                                     </div>
                                     <div class="form-control">
                                         <label class="label">
                                             <span class="label-text text-xs">Kraj</span>
                                         </label>
-                                        <input type="time" name="days[{{ $wh->id }}][end_time]" class="input input-bordered input-sm" value="{{ $endTime }}">
+                                        <input type="time" name="days[{{ $days['wh_id'] }}][end_time]" class="input input-bordered input-sm" value="{{ $days['end_time'] }}">
                                     </div>
                                 </div>
                             </div>
@@ -579,7 +561,7 @@
     </dialog>
 
     <!-- Edit Single Day Modal -->
-    <dialog id="edit_day_{{ $wh->id }}" class="modal">
+    <dialog id="edit_day_{{ $days['wh_id'] }}" class="modal">
         <div class="modal-box">
             <form method="dialog">
                 <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
@@ -628,7 +610,7 @@
                 </div>
 
                 <div class="flex justify-end gap-2 pt-4">
-                    <button type="button" class="btn btn-ghost" onclick="document.getElementById('edit_day_{{ $wh->id }}').close()">
+                    <button type="button" class="btn btn-ghost" onclick="document.getElementById('edit_day_{{ $days['wh_id'] }}').close()">
                         Otkaži
                     </button>
                     <button type="submit" class="btn btn-primary">

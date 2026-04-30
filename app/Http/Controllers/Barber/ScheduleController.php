@@ -76,12 +76,24 @@ class ScheduleController extends Controller
 
         for($i = 0; $i < 7; $i++)
         {
+            
             $date = $startOfWeek->copy()->addDays($i);
+            $wh = $schedules->get($date->dayOfWeek);
+            $isDayOff = $wh->is_day_off;
             $weekDays[] = [
                 'day_name' => $date->locale('sr')->translatedFormat('l'),
                 'day_number' => $date->format('j'),
                 'day_of_week' => $date->dayOfWeek,
                 'is_today' => $date->isToday(),
+                'wh_id' => $wh->id,
+                'is_day_off' => $isDayOff,
+                'start_time' => $isDayOff ? null : Carbon::parse($wh->start_time)->format('H:i'),
+                'end_time'   => $isDayOff ? null : Carbon::parse($wh->end_time)->format('H:i'),
+                'duration'   => $isDayOff ? '0h' : (function() use ($wh) {
+                    $mins = Carbon::parse($wh->start_time)->diffInMinutes(Carbon::parse($wh->end_time));
+                    return floor($mins / 60) . 'h' . ($mins % 60 > 0 ? ' ' . ($mins % 60) . 'm' : '');
+                })(),
+                'date' => $date,
             ];
         }
         return view('barber.schedule', compact('barber', 'schedules', 'workingDaysCount', 'notWorkingDays', 'weeklyHours', 'totalMinutes' ,'longestHours', 'appointmentsForWeek', 'revenueForWeek', 'weekDays'));
