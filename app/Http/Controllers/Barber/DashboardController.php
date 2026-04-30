@@ -84,7 +84,8 @@ class DashboardController extends Controller
             ];
         }
 
-        $appointmentsForWeek = Appointment::whereBetween('start_time', [
+        $appointmentsForWeek = Appointment::where('barber_id', $barberId)
+        ->whereBetween('start_time', [
             now()->startOfWeek(),
             now()->endOfWeek()
         ])

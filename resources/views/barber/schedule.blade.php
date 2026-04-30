@@ -48,6 +48,15 @@
             height: 8px;
             border-radius: 50%;
         }
+        @media print {
+            body * { visibility: hidden; }
+            .print-area, .print-area * { visibility: visible; }
+            .print-area { position: absolute; top: 0; left: 0; width: 100%; }
+            .no-print { display: none; }
+
+            .overflow-x-auto { overflow: visible !important; }
+
+        }
     </style>
 <body class="bg-gray-50">
     <div class="flex h-screen overflow-hidden">
@@ -329,7 +338,7 @@
                 </div>
 
                 <!-- Schedule Details Table -->
-                <div class="card bg-white shadow-xl">
+                <div class="card bg-white shadow-xl print-area">
                     <div class="card-body">
                         <div class="flex items-center justify-between mb-4">
                             <h3 class="card-title">
@@ -341,7 +350,7 @@
                                         <i class="fas fa-download"></i>
                                         Export
                                     </a>
-                                <button class="btn btn-outline btn-sm">
+                                <button onclick="window.print()" class="btn btn-outline btn-sm no-print">
                                     <i class="fas fa-print"></i>
                                     Print
                                 </button>
@@ -389,7 +398,7 @@
                                                 <div class="badge badge-info">{{ $dailyApps->count() }} termina</div>
                                             </td>
                                             <td>
-                                                <button class="btn btn-ghost btn-xs" onclick="document.getElementById('edit_day_{{ $wh->id }}').showModal()">
+                                                <button class="btn btn-ghost btn-xs" onclick="document.getElementById('edit_day_{{ $days['wh_id'] }}').showModal()">
                                                     <i class="fas fa-edit"></i>
                                                 </button>
                                             </td>

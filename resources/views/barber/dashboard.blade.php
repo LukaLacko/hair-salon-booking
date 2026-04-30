@@ -666,7 +666,7 @@
                                                                                 Trajanje
                                                                             </span>
                                                                         </label>
-                                                                        <input type="text" value="{{ \Carbon\Carbon::parse($upNextAppointment->start_time)->diff(\Carbon\Carbon::parse($upNextAppointment->end_time))->forHumans(['short' => true, 'parts' => 2]) }}" class="input input-bordered" readonly>
+                                                                        <input type="text" value="{{$upNextAppointment ? \Carbon\Carbon::parse($upNextAppointment->start_time)->diff(\Carbon\Carbon::parse($upNextAppointment->end_time))->forHumans(['short' => true, 'parts' => 2]) : 'Nema Termina'}}" class="input input-bordered" readonly>
                                                                     </div>
                                                                 </div>
 
