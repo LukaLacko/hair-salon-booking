@@ -1,3 +1,36 @@
+@if(session('success'))
+<div id="success-alert" class="alert alert-success shadow-lg mb-4">
+    <span>{{ session('success') }}</span>
+</div>
+@endif
+
+@if(session('error'))
+<div id="error-alert" class="alert alert-error shadow-lg mb-4">
+    <span>{{ session('error') }}</span>
+</div>
+@endif
+
+<script>
+    setTimeout(function() {
+        const successAlert = document.getElementById('success-alert');
+        if (successAlert) {
+            successAlert.style.transition = 'opacity 1s';
+            successAlert.style.opacity = '0';
+            setTimeout(() => {
+                successAlert.style.display = 'none';
+            }, 1000);
+        }
+
+        const errorAlert = document.getElementById('error-alert');
+        if (errorAlert) {
+            errorAlert.style.transition = 'opacity 1s';
+            errorAlert.style.opacity = '0';
+            setTimeout(() => {
+                errorAlert.style.display = 'none';
+            }, 1000);
+        }
+    }, 3000);
+</script>
 <x-app-layout>
     <style>
         .sidebar-gradient {
@@ -219,11 +252,12 @@
                                         @php
                                             $dailyApps = $appointmentsForWeek->get($days['day_number'], collect());
                                             $wh = $schedules->get($days['day_of_week']);
+                                            $isDayOff = $wh->is_day_off;
                                             $startTime = \Carbon\Carbon::parse($wh->start_time)->format('H:i');
                                             $endTime   = \Carbon\Carbon::parse($wh->end_time)->format('H:i');
     
                                         @endphp
-                                            @if ($days['is_today'])
+                                            @if ($days['is_today'] && !$isDayOff)
                                                 <div class="schedule-card flex items-center gap-4 p-4 border-2 border-primary rounded-lg bg-primary/5">
                                                     <div class="flex items-center gap-3 w-32">
                                                         <div class="day-indicator bg-warning animate-pulse"></div>
@@ -248,13 +282,13 @@
                                                         <p class="text-xs text-gray-500">{{ $dailyApps->count() }} termina</p>
                                                     </div>
                                                 </div>
-                                            @elseif ($days['day_of_week'] == 0)
+                                            @elseif ($isDayOff)
                                                 <div class="schedule-card flex items-center gap-4 p-4 border border-error/30 rounded-lg bg-error/5">
                                                     <div class="flex items-center gap-3 w-32">
                                                         <div class="day-indicator bg-error"></div>
                                                         <div>
-                                                            <p class="font-bold text-gray-800">Nedelja</p>
-                                                            <p class="text-xs text-gray-500">Nedelja</p>
+                                                            <p class="font-bold text-gray-800 capitalize">{{ $days['day_name'] }}</p>
+                                                            <p class="text-xs text-gray-50 capitalize">{{ $days['day_name'] }}</p>
                                                         </div>
                                                     </div>
                                                     <div class="flex-1 flex items-center justify-center gap-2">
@@ -339,12 +373,13 @@
                                     @php
                                         $dailyApps = $appointmentsForWeek->get($days['day_number'], collect());
                                         $wh = $schedules->get($days['day_of_week']);
+                                        $isDayOff = $wh->is_day_off;
                                         $startTime = \Carbon\Carbon::parse($wh->start_time)->format('H:i');
                                         $endTime   = \Carbon\Carbon::parse($wh->end_time)->format('H:i');
                                         $duration = \Carbon\Carbon::parse($wh->start_time)->diff(\Carbon\Carbon::parse($wh->end_time))->forHumans(['short' => true, 'parts' => 2]);
 
                                     @endphp
-                                    @if ($days['is_today'])
+                                    @if ($days['is_today'] && !$isDayOff)
                                         <tr class="bg-primary/5">
                                             <td>
                                                 <div class="flex items-center gap-2">
@@ -365,18 +400,18 @@
                                                 <div class="badge badge-info">{{ $dailyApps->count() }} termina</div>
                                             </td>
                                             <td>
-                                                <button class="btn btn-ghost btn-xs" onclick="document.getElementById('edit_day_modal').showModal()">
+                                                <button class="btn btn-ghost btn-xs" onclick="document.getElementById('edit_day_{{ $wh->id }}').showModal()">
                                                     <i class="fas fa-edit"></i>
                                                 </button>
                                             </td>
                                         </tr>
-                                    @elseif($days['day_of_week'] == 0)
+                                    @elseif($isDayOff)
                                         <tr class="bg-error/5">
                                             <td>
                                                 <div class="flex items-center gap-2">
                                                     <div class="day-indicator bg-error"></div>
                                                     <div>
-                                                        <div class="font-bold">Nedelja</div>
+                                                        <div class="font-bold capitalize">{{ $days['day_name'] }}</div>
                                                         <div class="text-sm opacity-50">Apr 27</div>
                                                     </div>
                                                 </div>
@@ -391,7 +426,7 @@
                                                 <div class="badge badge-ghost">-</div>
                                             </td>
                                             <td>
-                                                <button class="btn btn-ghost btn-xs" onclick="document.getElementById('edit_day_modal').showModal()">
+                                                <button class="btn btn-ghost btn-xs" onclick="document.getElementById('edit_day_{{ $wh->id }}').showModal()">
                                                     <i class="fas fa-edit"></i>
                                                 </button>
                                             </td>
@@ -417,7 +452,7 @@
                                                 <div class="badge badge-info">{{ $dailyApps->count() }} termina</div>
                                             </td>
                                             <td>
-                                                <button class="btn btn-ghost btn-xs" onclick="document.getElementById('edit_day_modal').showModal()">
+                                                <button class="btn btn-ghost btn-xs" onclick="document.getElementById('edit_day_{{ $wh->id }}').showModal()">
                                                     <i class="fas fa-edit"></i>
                                                 </button>
                                             </td>
@@ -456,191 +491,76 @@
                 Izmeni nedeljni raspored
             </h3>
 
-            <form class="space-y-4">
-                <!-- Quick Presets -->
+            <form class="space-y-4" action="{{ route('barber.izmeni-sve') }}" method="post">
+                @csrf
+                @method('PUT')
+
                 <div class="alert alert-info">
                     <i class="fas fa-magic"></i>
                     <div>
-                        <div class="font-semibold">Brza podešavanja</div>
-                        <div class="flex gap-2 mt-2">
-                            <button type="button" class="btn btn-xs btn-outline">Radni dani 9-17</button>
-                            <button type="button" class="btn btn-xs btn-outline">Produženo radno vreme</button>
-                            <button type="button" class="btn btn-xs btn-outline">Vikend shift</button>
-                        </div>
+                        <div class="font-semibold">Radno Vreme</div>
                     </div>
                 </div>
 
                 <!-- Days Grid -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <!-- Monday -->
-                    <div class="border border-gray-200 rounded-lg p-4">
-                        <div class="flex items-center justify-between mb-3">
-                            <label class="label cursor-pointer gap-2">
-                                <input type="checkbox" class="toggle toggle-success" checked />
-                                <span class="label-text font-bold">Ponedeljak</span>
-                            </label>
-                        </div>
-                        <div class="grid grid-cols-2 gap-2">
-                            <div class="form-control">
-                                <label class="label">
-                                    <span class="label-text text-xs">Početak</span>
-                                </label>
-                                <input type="time" class="input input-bordered input-sm" value="09:00">
+                    @foreach($weekDays as $days)
+                        @php
+                            $wh = $schedules->get($days['day_of_week']);
+                            $isDayOff = $wh->is_day_off;
+                            $startTime = \Carbon\Carbon::parse($wh->start_time)->format('H:i');
+                            $endTime   = \Carbon\Carbon::parse($wh->end_time)->format('H:i');
+                            $duration = \Carbon\Carbon::parse($wh->start_time)->diff(\Carbon\Carbon::parse($wh->end_time))->forHumans(['short' => true, 'parts' => 2]);
+                        @endphp
+                        @if ($isDayOff)
+                            <div class="border border-error/30 rounded-lg p-4 bg-error/5">
+                                <div class="flex items-center justify-between mb-3">
+                                    <label class="label cursor-pointer gap-2">
+                                        <input type="checkbox" name="days[{{ $wh->id }}][is_day_off]" class="toggle toggle-error" {{ $wh->is_day_off ? 'checked' : '' }} />
+                                        <span class="label-text font-bold capitalize">{{ $days['day_name'] }}</span>
+                                    </label>
+                                </div>
+                                <div class="grid grid-cols-2 gap-2 opacity-50">
+                                    <div class="form-control">
+                                        <label class="label">
+                                            <span class="label-text text-xs">Početak</span>
+                                        </label>
+                                        <input type="time" name="days[{{ $wh->id }}][start_time]" class="input input-bordered input-sm" value="">
+                                    </div>
+                                    <div class="form-control">
+                                        <label class="label">
+                                            <span class="label-text text-xs">Kraj</span>
+                                        </label>
+                                        <input type="time" name="days[{{ $wh->id }}][end_time]" class="input input-bordered input-sm" value="">
+                                    </div>
+                                </div>
                             </div>
-                            <div class="form-control">
-                                <label class="label">
-                                    <span class="label-text text-xs">Kraj</span>
-                                </label>
-                                <input type="time" class="input input-bordered input-sm" value="17:00">
+                        @else
+                            <div class="border border-gray-200 rounded-lg p-4">
+                                <div class="flex items-center justify-between mb-3">
+                                    <label class="label cursor-pointer gap-2">
+                                        <input type="checkbox" name="days[{{ $wh->id }}][is_day_off]" class="toggle toggle-error" {{ $wh->is_day_off ? 'checked' : '' }} />
+                                        <span class="label-text font-bol capitalize">{{ $days['day_name'] }}</span>
+                                    </label>
+                                </div>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div class="form-control">
+                                        <label class="label">
+                                            <span class="label-text text-xs">Početak</span>
+                                        </label>
+                                        <input type="time" name="days[{{ $wh->id }}][start_time]" class="input input-bordered input-sm" value="{{ $startTime }}">
+                                    </div>
+                                    <div class="form-control">
+                                        <label class="label">
+                                            <span class="label-text text-xs">Kraj</span>
+                                        </label>
+                                        <input type="time" name="days[{{ $wh->id }}][end_time]" class="input input-bordered input-sm" value="{{ $endTime }}">
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-
-                    <!-- Tuesday -->
-                    <div class="border border-gray-200 rounded-lg p-4">
-                        <div class="flex items-center justify-between mb-3">
-                            <label class="label cursor-pointer gap-2">
-                                <input type="checkbox" class="toggle toggle-success" checked />
-                                <span class="label-text font-bold">Utorak</span>
-                            </label>
-                        </div>
-                        <div class="grid grid-cols-2 gap-2">
-                            <div class="form-control">
-                                <label class="label">
-                                    <span class="label-text text-xs">Početak</span>
-                                </label>
-                                <input type="time" class="input input-bordered input-sm" value="09:00">
-                            </div>
-                            <div class="form-control">
-                                <label class="label">
-                                    <span class="label-text text-xs">Kraj</span>
-                                </label>
-                                <input type="time" class="input input-bordered input-sm" value="17:00">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Wednesday -->
-                    <div class="border border-gray-200 rounded-lg p-4">
-                        <div class="flex items-center justify-between mb-3">
-                            <label class="label cursor-pointer gap-2">
-                                <input type="checkbox" class="toggle toggle-success" checked />
-                                <span class="label-text font-bold">Sreda</span>
-                            </label>
-                        </div>
-                        <div class="grid grid-cols-2 gap-2">
-                            <div class="form-control">
-                                <label class="label">
-                                    <span class="label-text text-xs">Početak</span>
-                                </label>
-                                <input type="time" class="input input-bordered input-sm" value="09:00">
-                            </div>
-                            <div class="form-control">
-                                <label class="label">
-                                    <span class="label-text text-xs">Kraj</span>
-                                </label>
-                                <input type="time" class="input input-bordered input-sm" value="17:00">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Thursday -->
-                    <div class="border border-gray-200 rounded-lg p-4">
-                        <div class="flex items-center justify-between mb-3">
-                            <label class="label cursor-pointer gap-2">
-                                <input type="checkbox" class="toggle toggle-success" checked />
-                                <span class="label-text font-bold">Četvrtak</span>
-                            </label>
-                        </div>
-                        <div class="grid grid-cols-2 gap-2">
-                            <div class="form-control">
-                                <label class="label">
-                                    <span class="label-text text-xs">Početak</span>
-                                </label>
-                                <input type="time" class="input input-bordered input-sm" value="09:00">
-                            </div>
-                            <div class="form-control">
-                                <label class="label">
-                                    <span class="label-text text-xs">Kraj</span>
-                                </label>
-                                <input type="time" class="input input-bordered input-sm" value="17:00">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Friday -->
-                    <div class="border border-gray-200 rounded-lg p-4">
-                        <div class="flex items-center justify-between mb-3">
-                            <label class="label cursor-pointer gap-2">
-                                <input type="checkbox" class="toggle toggle-success" checked />
-                                <span class="label-text font-bold">Petak</span>
-                            </label>
-                        </div>
-                        <div class="grid grid-cols-2 gap-2">
-                            <div class="form-control">
-                                <label class="label">
-                                    <span class="label-text text-xs">Početak</span>
-                                </label>
-                                <input type="time" class="input input-bordered input-sm" value="09:00">
-                            </div>
-                            <div class="form-control">
-                                <label class="label">
-                                    <span class="label-text text-xs">Kraj</span>
-                                </label>
-                                <input type="time" class="input input-bordered input-sm" value="17:00">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Saturday -->
-                    <div class="border border-gray-200 rounded-lg p-4">
-                        <div class="flex items-center justify-between mb-3">
-                            <label class="label cursor-pointer gap-2">
-                                <input type="checkbox" class="toggle toggle-success" checked />
-                                <span class="label-text font-bold">Subota</span>
-                            </label>
-                        </div>
-                        <div class="grid grid-cols-2 gap-2">
-                            <div class="form-control">
-                                <label class="label">
-                                    <span class="label-text text-xs">Početak</span>
-                                </label>
-                                <input type="time" class="input input-bordered input-sm" value="10:00">
-                            </div>
-                            <div class="form-control">
-                                <label class="label">
-                                    <span class="label-text text-xs">Kraj</span>
-                                </label>
-                                <input type="time" class="input input-bordered input-sm" value="14:00">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Sunday -->
-                    <div class="border border-error/30 rounded-lg p-4 bg-error/5">
-                        <div class="flex items-center justify-between mb-3">
-                            <label class="label cursor-pointer gap-2">
-                                <input type="checkbox" class="toggle toggle-error" />
-                                <span class="label-text font-bold">Nedelja</span>
-                            </label>
-                        </div>
-                        <div class="grid grid-cols-2 gap-2 opacity-50">
-                            <div class="form-control">
-                                <label class="label">
-                                    <span class="label-text text-xs">Početak</span>
-                                </label>
-                                <input type="time" class="input input-bordered input-sm" value="09:00" disabled>
-                            </div>
-                            <div class="form-control">
-                                <label class="label">
-                                    <span class="label-text text-xs">Kraj</span>
-                                </label>
-                                <input type="time" class="input input-bordered input-sm" value="17:00" disabled>
-                            </div>
-                        </div>
-                    </div>
+                        @endif
+                    @endforeach
                 </div>
-
                 <!-- Actions -->
                 <div class="flex justify-end gap-2 pt-4">
                     <button type="button" class="btn btn-ghost" onclick="document.getElementById('edit_schedule_modal').close()">
@@ -659,7 +579,7 @@
     </dialog>
 
     <!-- Edit Single Day Modal -->
-    <dialog id="edit_day_modal" class="modal">
+    <dialog id="edit_day_{{ $wh->id }}" class="modal">
         <div class="modal-box">
             <form method="dialog">
                 <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
@@ -708,7 +628,7 @@
                 </div>
 
                 <div class="flex justify-end gap-2 pt-4">
-                    <button type="button" class="btn btn-ghost" onclick="document.getElementById('edit_day_modal').close()">
+                    <button type="button" class="btn btn-ghost" onclick="document.getElementById('edit_day_{{ $wh->id }}').close()">
                         Otkaži
                     </button>
                     <button type="submit" class="btn btn-primary">

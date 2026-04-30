@@ -116,4 +116,21 @@ class ScheduleController extends Controller
             'raspored-' . now()->format('Y-m') . '.xlsx'
         );
     }
+
+    public function updateAll(Request $request)
+    {
+
+
+        foreach($request->days as $id => $data)
+        {
+
+            WorkingHour::where('id', $id)->update([
+                'is_day_off' => isset($data['is_day_off']),
+                'start_time' => isset($data['is_day_off']) ? null : $data['start_time'],
+                'end_time' => isset($data['is_day_off']) ? null : $data['end_time'],
+            ]);
+        }
+        
+        return redirect()->back()->with('success', 'Upsešno izmenjen raspored!');
+    }
 }
