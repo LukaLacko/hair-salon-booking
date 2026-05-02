@@ -91,7 +91,7 @@
                     <i class="fas fa-calendar-alt w-5"></i>
                     <span>Moj Raspored</span>
                 </a>
-                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/10 text-gray-300 hover:text-white transition-all">
+                <a href="{{ route('barber.klijenti') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/10 text-gray-300 hover:text-white transition-all">
                     <i class="fas fa-users w-5"></i>
                     <span>Moji Klijenti</span>
                 </a>

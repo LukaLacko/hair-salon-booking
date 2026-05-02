@@ -10,6 +10,8 @@ use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Barber\DashboardController as BarberDashboardController;
 use App\Http\Controllers\Barber\ScheduleController as BarberScheduleController;
+use App\Http\Controllers\Barber\ClientController as BarberClientController;
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -54,6 +56,8 @@ Route::middleware(['auth', 'barber'])->prefix('barber')->name('barber.')->group(
     Route::get('/raspored', [BarberScheduleController::class, 'index'])->name('raspored');
     Route::put('/raspored/izmeni-sve', [BarberScheduleController::class, 'updateAll'])->name('izmeni-sve');
     Route::put('/raspored/izmeni/{id}', [BarberScheduleController::class, 'update'])->name('izmeni');
+
+    Route::get('/klijenti', [BarberClientController::class, 'index'])->name('klijenti');
 
     Route::get('/raspored/export', [BarberScheduleController::class, 'export'])->name('schedule.export');
 });
