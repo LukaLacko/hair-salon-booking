@@ -312,6 +312,77 @@ class AppointmentSeeder extends Seeder
         $appointment->save();
 
 
+        $appointment = new Appointment();
+        $appointment->barber_id = 1;
+        $appointment->client_id = 4;
+        $appointment->service_id = 2;
+        $appointment->start_time = '2026-5-2 10:00:00';
+        $appointment->end_time = '2026-5-2 11:30:00';
+        $appointment->status = 'Potvrđeno';
+        $appointment->notes = null;
+        $appointment->price = 1500;
+        $appointment->save();
+
+
+        $appointment = new Appointment();
+        $appointment->barber_id = 1;
+        $appointment->client_id = 4;
+        $appointment->service_id = 8;
+        $appointment->start_time = '2026-5-2 15:00:00';
+        $appointment->end_time = '2026-5-2 15:30:00';
+        $appointment->status = 'Potvrđeno';
+        $appointment->notes = null;
+        $appointment->price = 2500;
+        $appointment->save();
+
+
+        $appointment = new Appointment();
+        $appointment->barber_id = 1;
+        $appointment->client_id = 4;
+        $appointment->service_id = 8;
+        $appointment->start_time = '2026-5-1 10:00:00';
+        $appointment->end_time = '2026-5-1 11:30:00';
+        $appointment->status = 'Potvrđeno';
+        $appointment->notes = null;
+        $appointment->price = 1000;
+        $appointment->save();
+
+        $appointment = new Appointment();
+        $appointment->barber_id = 1;
+        $appointment->client_id = 4;
+        $appointment->service_id = 8;
+        $appointment->start_time = '2026-5-5 10:00:00';
+        $appointment->end_time = '2026-5-5 11:30:00';
+        $appointment->status = 'Potvrđeno';
+        $appointment->notes = null;
+        $appointment->price = 1000;
+        $appointment->save();
+
+
+        $appointment = new Appointment();
+        $appointment->barber_id = 1;
+        $appointment->client_id = 2;
+        $appointment->service_id = 2;
+        $appointment->start_time = '2026-5-6 11:00:00';
+        $appointment->end_time = '2026-5-6 12:30:00';
+        $appointment->status = 'Potvrđeno';
+        $appointment->notes = null;
+        $appointment->price = 1200;
+        $appointment->save();
+
+
+        $appointment = new Appointment();
+        $appointment->barber_id = 1;
+        $appointment->client_id = 2;
+        $appointment->service_id = 2;
+        $appointment->start_time = '2026-4-15 11:00:00';
+        $appointment->end_time = '2026-4-15 12:30:00';
+        $appointment->status = 'Otkazano';
+        $appointment->notes = null;
+        $appointment->price = 1200;
+        $appointment->save();
+
+
 
     }
 }

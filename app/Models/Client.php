@@ -14,4 +14,12 @@ class Client extends Model
     {
         return $this->hasMany(Appointment::class);
     }
+
+    public function nextAppointment()
+    {
+        return $this->hasOne(Appointment::class)
+            ->where('start_time', '>', now())
+            ->where('status', 'Potvrđeno')
+            ->orderBy('start_time', 'asc');
+    }
 }
