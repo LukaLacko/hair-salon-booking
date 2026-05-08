@@ -1,3 +1,4 @@
+@extends('layouts.app2')
 @if(session('success'))
 <div id="success-alert" class="alert alert-success shadow-lg mb-4">
     <span>{{ session('success') }}</span>
@@ -31,8 +32,8 @@
         }
     }, 3000);
 </script>
-<x-app-layout>
-    <style>
+@section('slot')    
+<style>
         .sidebar-gradient {
             background: linear-gradient(180deg, #1f2937 0%, #111827 100%);
         }
@@ -118,9 +119,12 @@
                         <p class="font-medium text-sm truncate">{{ $barber->name }}</p>
                         <p class="text-xs text-gray-400">Frizer</p>
                     </div>
-                    <button class="btn btn-ghost btn-xs btn-circle">
-                        <i class="fas fa-sign-out-alt"></i>
-                    </button>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="btn btn-ghost btn-xs btn-circle">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </button>
+                    </form>
                 </div>
             </div>
         </aside>
@@ -745,8 +749,7 @@
             }
         });
     </script>
-</x-app-layout>
-
+@endsection
 
 
 

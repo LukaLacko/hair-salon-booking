@@ -58,6 +58,7 @@ Route::middleware(['auth', 'barber'])->prefix('barber')->name('barber.')->group(
     Route::put('/raspored/izmeni/{id}', [BarberScheduleController::class, 'update'])->name('izmeni');
 
     Route::get('/klijenti', [BarberClientController::class, 'index'])->name('klijenti');
+    Route::post('/klijenti/dodaj', [BarberClientController::class, 'store'])->name('dodaj');
 
     Route::get('/raspored/export', [BarberScheduleController::class, 'export'])->name('schedule.export');
 });

@@ -7,6 +7,8 @@ use App\Models\Appointment;
 use App\Models\Barber;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
+use App\Models\Client;
 
 class ClientController extends Controller
 {
@@ -138,5 +140,22 @@ class ClientController extends Controller
             ->first();
 
         return view('barber.clients', compact('barber', 'threeAppointments','allClients', 'myTotalClients', 'newClientsThisMonth', 'newClientsThisMonthCount', 'vipClients', 'activeClients', 'countActiveClientsThisMonth', 'activeClientsPercentage', 'riskyClients', 'inactiveClients', 'bestClientThisMonth'));
+    }
+
+    public function store(Request $request)
+    {   
+        if(empty($request->name))
+        {
+            return redirect()->back()->with('error', 'Neuspešno dodvanje! Popunite sva obavezna polja!');
+        }
+
+        $client = new Client();
+        $client->name = $request->name;
+        $client->phone = $request->phone;
+        $client->email = $request->email;
+        $client->save();
+
+        return redirect()->back()->with('success', 'Uspešno dodvanje klijenta!');
+
     }
 }

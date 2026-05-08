@@ -17,7 +17,11 @@ class DashboardController extends Controller
         $barbers = Barber::withCount('appointments')
             ->withSum('appointments as total_profit', 'price')
             ->get();
-        $appointments = Appointment::all();
+
+        $appointments = Appointment::where('status', 'Završeno')
+            ->orderBy('start_time', 'desc')
+            ->paginate(8);
+            
 
         $totalBarbers = Barber::count();
 

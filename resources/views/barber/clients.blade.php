@@ -1,4 +1,38 @@
-<x-app-layout>
+@extends('layouts.app2')    
+@if(session('success'))
+<div id="success-alert" class="alert alert-success shadow-lg mb-4">
+    <span>{{ session('success') }}</span>
+</div>
+@endif
+
+@if(session('error'))
+<div id="error-alert" class="alert alert-error shadow-lg mb-4">
+    <span>{{ session('error') }}</span>
+</div>
+@endif
+
+<script>
+    setTimeout(function() {
+        const successAlert = document.getElementById('success-alert');
+        if (successAlert) {
+            successAlert.style.transition = 'opacity 1s';
+            successAlert.style.opacity = '0';
+            setTimeout(() => {
+                successAlert.style.display = 'none';
+            }, 1000);
+        }
+
+        const errorAlert = document.getElementById('error-alert');
+        if (errorAlert) {
+            errorAlert.style.transition = 'opacity 1s';
+            errorAlert.style.opacity = '0';
+            setTimeout(() => {
+                errorAlert.style.display = 'none';
+            }, 1000);
+        }
+    }, 3000);
+</script>
+@section('slot')    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         .sidebar-gradient {
@@ -55,6 +89,7 @@
                     <i class="fas fa-clock w-5"></i>
                     <span>Radni Sati</span>
                 </a>
+
             </nav>
 
             <!-- User Profile -->
@@ -70,9 +105,13 @@
                         <p class="font-medium text-sm truncate">{{ $barber->name }}</p>
                         <p class="text-xs text-gray-400">Frizer</p>
                     </div>
-                    <button class="btn btn-ghost btn-xs btn-circle">
-                        <i class="fas fa-sign-out-alt"></i>
-                    </button>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="btn btn-ghost btn-xs btn-circle">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </button>
+                    </form>
+
                 </div>
             </div>
         </aside>
@@ -765,35 +804,28 @@
                 Dodaj Novog Klijenta
             </h3>
 
-            <form class="space-y-4">
+            <form action="{{ route('barber.dodaj') }}" method="post">
                 <!-- Personal Info -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="form-control">
                         <label class="label">
-                            <span class="label-text font-semibold">Ime</span>
+                            <span class="label-text font-semibold">Ime Prezime</span>
                         </label>
-                        <input type="text" placeholder="ime" class="input input-bordered" required>
-                    </div>
-
-                    <div class="form-control">
-                        <label class="label">
-                            <span class="label-text font-semibold">Prezime</span>
-                        </label>
-                        <input type="text" placeholder="prezime" class="input input-bordered" required>
+                        <input type="text" name="name" placeholder="ime i prezime" class="input input-bordered" required>
                     </div>
 
                     <div class="form-control">
                         <label class="label">
                             <span class="label-text font-semibold">Telefon</span>
                         </label>
-                        <input type="tel" placeholder="broj" class="input input-bordered" required>
+                        <input type="tel" placeholder="broj" name="phone" class="input input-bordered" required>
                     </div>
 
                     <div class="form-control">
                         <label class="label">
                             <span class="label-text font-semibold">Email</span>
                         </label>
-                        <input type="email" placeholder="email" class="input input-bordered">
+                        <input type="email" placeholder="email" name="email" class="input input-bordered">
                     </div>
                 </div>
 
@@ -802,7 +834,7 @@
                     <label class="label">
                         <span class="label-text font-semibold">Client Notes</span>
                     </label>
-                    <textarea class="textarea textarea-bordered h-24" placeholder="Preferencije... napomene..."></textarea>
+                    <textarea class="textarea textarea-bordered h-24" name="notes" placeholder="Preferencije... napomene..."></textarea>
                 </div>
 
                 <!-- Actions -->
@@ -821,4 +853,4 @@
             <button>close</button>
         </form>
     </dialog>
-</x-app-layout>
+@endsection

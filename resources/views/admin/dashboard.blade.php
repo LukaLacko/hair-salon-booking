@@ -243,6 +243,9 @@
                             </tr>
                             @endforeach
                         </tbody>
+                        <div class="join mb-2">
+                            {{ $appointments->links() }}
+                        </div>                    
                     </table>
                 </div>
             </div>
