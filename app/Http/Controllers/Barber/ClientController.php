@@ -29,23 +29,44 @@ class ClientController extends Controller
             ->map(fn($apps) => $apps->take(3))
             ->flatten();
 
+        $filter = request('filter');
+
         $allClients = Appointment::where('barber_id', $barberId)
-            ->with('service')
-            ->with(['client.nextAppointment'])
-            ->selectRaw("client_id, 
-                        SUM(status = 'Završeno') as total_visits, 
-                        SUM(IF(status = 'Završeno', price, 0)) as total_spent, 
-                        MAX(IF(status = 'Završeno', end_time, NULL)) as last_visit_date, 
-                        AVG(IF(status = 'Završeno', price, NULL)) as avg_spent, 
-                        SUM(status = 'Otkazano') as total_canceled")
-            ->groupBy('client_id')
-            ->paginate(6);
+        ->with('service')
+        ->with(['client.nextAppointment'])
+        ->selectRaw("client_id, 
+                    SUM(status = 'Završeno') as total_visits, 
+                    SUM(IF(status = 'Završeno', price, 0)) as total_spent, 
+                    MAX(IF(status = 'Završeno', end_time, NULL)) as last_visit_date, 
+                    AVG(IF(status = 'Završeno', price, NULL)) as avg_spent, 
+                    SUM(status = 'Otkazano') as total_canceled")
+        ->groupBy('client_id')
+        ->when($filter == 'vip', fn($q) => 
+            $q->havingRaw('SUM(IF(status = "Završeno", price, 0)) >= 15000 OR SUM(status = "Završeno") >= 3')
+            ->whereMonth('end_time', now()->month)
+        )
+        ->when($filter == 'novi', fn($q) => 
+            $q->havingRaw('MIN(created_at) >= ?', [now()->startOfMonth()])
+        )       
+        ->when($filter == 'aktivni', fn($q) => 
+            $q->havingRaw('MONTH(MAX(end_time)) = ?', [now()->month])
+            ->havingRaw('YEAR(MAX(end_time)) = ?', [now()->year])
+        )
+        ->when($filter == 'neaktivni', fn($q) => 
+            $q->havingRaw('MAX(IF(status = "Završeno", end_time, NULL)) < ?', [now()->subDays(120)])
+        )
+        ->when($filter == 'rizik', fn($q) => 
+            $q->havingRaw('MAX(IF(status = "Završeno", end_time, NULL)) BETWEEN ? AND ?', [
+                now()->subDays(120), 
+                now()->subDays(60) 
+        ]))
+        ->paginate(6)
+        ->withQueryString();
 
+        $countAllClients = Appointment::where('barber_id', $barberId)
+                ->distinct()
+                ->count('client_id');
 
-        $myTotalClients = Appointment::where('barber_id', $barberId)
-            ->where('status', 'Završeno')
-            ->distinct('client_id')
-            ->count('client_id');
 
         $newClientsThisMonth = Appointment::where('barber_id', $barberId)
             ->whereMonth('created_at', now()->month)
@@ -82,7 +103,7 @@ class ClientController extends Controller
             ->where('status', 'Završeno')
             ->selectRaw('client_id, SUM(price) as totalSpent, COUNT(*) as visit_count ')
             ->groupBy('client_id')
-            ->havingRaw('SUM(price) >= 15000 OR COUNT(*) >= 3')
+            ->havingRaw('SUM(price) >= 15000 OR SUM(status = "Završeno") >= 3')
             ->get();
         
         $activeClients = Appointment::where('barber_id', $barberId)
@@ -103,9 +124,10 @@ class ClientController extends Controller
             ->count('client_id');
         
         $activeClientsPercentage = 0;
-        if($myTotalClients > 0)
+        $totalClients = $allClients->total();
+        if($totalClients > 0)
         {
-            $activeClientsPercentage = ($countActiveClientsThisMonth / $myTotalClients) * 100;
+            $activeClientsPercentage = ($countActiveClientsThisMonth / $totalClients) * 100;
         }
 
         $activeClientsPercentage = round($activeClientsPercentage, 1);
@@ -139,7 +161,7 @@ class ClientController extends Controller
             ->orderByDesc('total_spent')
             ->first();
 
-        return view('barber.clients', compact('barber', 'threeAppointments','allClients', 'myTotalClients', 'newClientsThisMonth', 'newClientsThisMonthCount', 'vipClients', 'activeClients', 'countActiveClientsThisMonth', 'activeClientsPercentage', 'riskyClients', 'inactiveClients', 'bestClientThisMonth'));
+        return view('barber.clients', compact('barber', 'threeAppointments','allClients', 'countAllClients', 'newClientsThisMonth', 'newClientsThisMonthCount', 'vipClients', 'activeClients', 'countActiveClientsThisMonth', 'activeClientsPercentage', 'riskyClients', 'inactiveClients', 'bestClientThisMonth'));
     }
 
     public function store(Request $request)

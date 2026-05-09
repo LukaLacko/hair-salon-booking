@@ -155,7 +155,7 @@
                                 <i class="fas fa-users text-3xl"></i>
                             </div>
                             <div class="stat-title">Ukupno Klijenata</div>
-                            <div class="stat-value text-primary">{{ $myTotalClients }}</div>
+                            <div class="stat-value text-primary">{{ $allClients->total() }}</div>
                             <div class="stat-desc">↗︎ {{ $newClientsThisMonthCount }} novih ovog meseca</div>
                         </div>
                     </div>
@@ -206,30 +206,30 @@
                                     Brza Pretraga
                                 </h3>
                                 <div class="flex flex-wrap gap-2">
-                                    <button class="btn btn-sm btn-primary">
+                                    <a href="{{ route('barber.klijenti') }}" class="btn btn-sm {{ request('filter') == null ? 'btn-primary' : 'btn-outline' }}">
                                         <i class="fas fa-users"></i>
-                                        Svi Klijenti ({{ $myTotalClients }})
-                                    </button>
-                                    <button class="btn btn-sm btn-outline">
+                                        Svi Klijenti ({{ $countAllClients }})
+                                    </a>
+                                    <a href="{{ route('barber.klijenti', ['filter' => 'vip']) }}" class="btn btn-sm {{ request('filter') == 'vip' ? 'btn-primary' : 'btn-outline' }}">
                                         <i class="fas fa-star"></i>
                                         VIP ({{ $vipClients->count() }})
-                                    </button>
-                                    <button class="btn btn-sm btn-outline">
+                                    </a>
+                                    <a href="{{ route('barber.klijenti', ['filter' => 'novi']) }}" class="btn btn-sm {{ request('filter') == 'novi' ? 'btn-primary' : 'btn-outline' }}">
                                         <i class="fas fa-user-plus"></i>
                                         Novi ({{ $newClientsThisMonthCount }})
-                                    </button>
-                                    <button class="btn btn-sm btn-outline">
+                                    </a>
+                                    <a href="{{ route('barber.klijenti', ['filter' => 'aktivni']) }}" class="btn btn-sm {{ request('filter') == 'aktivni' ? 'btn-primary' : 'btn-outline' }}">
                                         <i class="fas fa-fire"></i>
                                         Aktivni ({{ $countActiveClientsThisMonth }})
-                                    </button>
-                                    <button class="btn btn-sm btn-outline">
+                                    </a>
+                                    <a href="{{ route('barber.klijenti', ['filter' => 'neaktivni']) }}" class="btn btn-sm {{ request('filter') == 'neaktivni' ? 'btn-primary' : 'btn-outline' }}">
                                         <i class="fas fa-clock"></i>
                                         Neaktivni ({{ $inactiveClients->count() }})
-                                    </button>
-                                    <button class="btn btn-sm btn-outline">
+                                    </a>
+                                    <a href="{{ route('barber.klijenti', ['filter' => 'rizik']) }}" class="btn btn-sm {{ request('filter') == 'rizik' ? 'btn-primary' : 'btn-outline' }}">
                                         <i class="fas fa-exclamation-circle"></i>
                                         U Riziku ({{ $riskyClients->count() }})
-                                    </button>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -604,7 +604,7 @@
                         <!-- Pagination -->
                         <div class="flex items-center justify-between mt-6 pt-4 border-t border-gray-200">
                             <div class="text-sm text-gray-500">
-                                Prikazano {{ $allClients->firstItem() }} do {{ $allClients->lastItem() }} od {{ $allClients->count() }} Klijenata
+                                Prikazano {{ $allClients->firstItem() }} do {{ $allClients->lastItem() }} od {{ $allClients->total() }} Klijenata
                             </div>
                             <div class="join">
                                 @if ($allClients->onFirstPage())
