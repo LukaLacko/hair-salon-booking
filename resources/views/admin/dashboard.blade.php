@@ -4,7 +4,7 @@
     <div class="drawer-content flex flex-col">
       <!-- Page content here -->
       {{-- Main Dashboard Content --}}
-<div class="min-h-screen bg-base-200 p-6">
+<div class="min-h-screen bg-black p-6 ">
     <div class="mx-auto max-w-7xl space-y-6">
         
         {{-- Header --}}

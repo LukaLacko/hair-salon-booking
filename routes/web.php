@@ -11,12 +11,11 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Barber\DashboardController as BarberDashboardController;
 use App\Http\Controllers\Barber\ScheduleController as BarberScheduleController;
 use App\Http\Controllers\Barber\ClientController as BarberClientController;
+use App\Http\Controllers\BookingController;
+use App\Http\Controllers\WelcomeController;
 
-
-Route::get('/', function () {
-    return view('welcome');
-});
-
+    Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
+    Route::get('/zakazivanje', [BookingController::class, 'index'])->name('booking');
 
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function(){

@@ -773,13 +773,9 @@
 
             <!-- Actions -->
             <div class="flex gap-2 mt-6 pt-4 border-t border-gray-200">
-                <button class="btn btn-primary flex-1">
-                    <i class="fas fa-calendar-plus"></i>
-                    Book Appointment
-                </button>
-                <button class="btn btn-outline flex-1">
+                <button class="btn btn-outline flex-1" onclick="document.getElementById('client_details_{{ $appointment->client_id }}').close()">
                     <i class="fas fa-edit"></i>
-                    Edit Client
+                    Nazad
                 </button>
                 <button class="btn btn-outline">
                     <i class="fas fa-envelope"></i>
