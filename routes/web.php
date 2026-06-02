@@ -16,6 +16,7 @@ use App\Http\Controllers\WelcomeController;
 
     Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
     Route::get('/zakazivanje', [BookingController::class, 'index'])->name('booking');
+    Route::post('/zakazivanje/potvrda', [BookingController::class, 'store'])->name('booking.store');
 
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function(){

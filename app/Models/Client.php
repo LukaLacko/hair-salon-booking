@@ -7,7 +7,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Client extends Model
 {
-
+    protected $fillable = [
+        'name',
+        'email',
+        'phone',
+        'notes'
+    ];
 
     use SoftDeletes;
     public function appointments()
