@@ -277,6 +277,22 @@
                         <span class="font-medium">Dashboard</span>
                     </a>
                 </li>        
+                <li>
+                    <a href="{{ route('admin.usluge') }}" class="{{ request()->routeIs('admin.usluge*') ? 'active' : '' }} flex items-center gap-3 px-4 py-3 rounded-xl transition-all">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                        <span class="font-medium">Usluge</span>
+                    </a>
+                </li>   
+                <li>
+                    <a href="{{ route('admin.frizeri') }}" class="{{ request()->routeIs('admin.frizeri*') ? 'active' : '' }} flex items-center gap-3 px-4 py-3 rounded-xl transition-all">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg>
+                        <span class="font-medium">Frizeri</span>
+                    </a>
+                </li>
     
                 <li>
                     <a href="{{ route('admin.termini') }}" class="{{ request()->routeIs('admin.termini*') ? 'active' : '' }} flex items-center gap-3 px-4 py-3 rounded-xl transition-all">
@@ -294,24 +310,8 @@
                         </svg>
                         <span class="font-medium">Klijenti</span>
                     </a>
-                </li>    
-                <li>
-                    <a href="{{ route('admin.usluge') }}" class="{{ request()->routeIs('admin.usluge*') ? 'active' : '' }} flex items-center gap-3 px-4 py-3 rounded-xl transition-all">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                        </svg>
-                        <span class="font-medium">Usluge</span>
-                    </a>
-                </li>        
+                </li>         
     
-                <li>
-                    <a href="{{ route('admin.frizeri') }}" class="{{ request()->routeIs('admin.frizeri*') ? 'active' : '' }} flex items-center gap-3 px-4 py-3 rounded-xl transition-all">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                        </svg>
-                        <span class="font-medium">Frizeri</span>
-                    </a>
-                </li>
             </div>
     
             <div class="mt-auto">
